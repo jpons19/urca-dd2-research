@@ -1,0 +1,25 @@
+name: Regression tests
+on:
+  push:
+  pull_request:
+jobs:
+  scientific-baselines:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Test stored EOS/rate results
+        run: |
+          python calculations/test_final.py
+          python calculations/test_T8_reference.py
+          python -m unittest discover -s tests -v
+      - name: Verify independent spin-isospin audit
+        run: |
+          python prior_audit/murca_spin_isospin_audit.py
+          python prior_audit/murca_angular_factor_test.py

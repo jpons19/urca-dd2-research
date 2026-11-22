@@ -1,0 +1,16 @@
+[
+  {
+    "kind": "cold, beta-equilibrated",
+    "original_uploaded_filename": "eos(2).zip",
+    "size_bytes": 73922,
+    "sha256": "7e9d8acb11491ae64748be3f76b7cb6ad8d4724da2926ef505ea88d9de27f247",
+    "catalogue_url": "https://compose.obspm.fr/eos/302"
+  },
+  {
+    "kind": "general-purpose, 3D",
+    "original_uploaded_filename": "eos(1)(1).zip",
+    "size_bytes": 190451886,
+    "sha256": "163efbc9a59752c6d7e3e4257f34504c3df41af963c1d323384c8f2be2f02c3f",
+    "catalogue_url": "https://compose.obspm.fr/eos/301"
+  }
+]

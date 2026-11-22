@@ -1,0 +1,16 @@
+__pycache__/
+.pytest_cache/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+.DS_Store
+*.log
+*.tmp
+*.bak
+# Do not commit the full original CompOSE archives (~182 MB)
+eos*.zip
+*.tar.gz
+# Optional future large derived arrays
+*.h5
+*.hdf5
