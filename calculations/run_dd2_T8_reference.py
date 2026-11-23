@@ -86,13 +86,13 @@ for nb in DENS:
         row[f'{k}_T8_extrap_MeV']=mm8[k]
         row[f'{k}_T01_MeV']=mm01[k]
         row[f'{k}_T0_extrap_MeV']=mm0[k]
-    for meth,pair in [('FM',(fe,fmu)),('Bottaro',(be,bmu)),('Shternin',(se,smu)),('Alford_adapted',(ae,amu))]:
+    for meth,pair in [('FM',(fe,fmu)),('Bottaro',(be,bmu)),('Bottaro_nontriangular',rate.bottaro_nontriangular(d)),('Shternin',(se,smu)),('Alford_adapted',(ae,amu))]:
         row[f'Q_{meth}_e_T8']=pair[0];row[f'Q_{meth}_mu_T8']=pair[1];row[f'Q_{meth}_total_T8']=sum(pair)
     # Recompute 10^9 K on precisely the same density grid to validate T^8 scaling,
     # avoiding irregularities from interpolation of earlier T9 output grids.
     rate.T=TK_1e9;rate.T9=1.;rate.HALF_WIDTH=rate.T**2/10
     d9=rate.make_data(float(nb),cold_i,m9)
-    for meth,pair in [('FM',rate.fm(d9)),('Bottaro',rate.bottaro(d9)),('Shternin',rate.shternin(d9)),('Alford_adapted',rate.alford(d9))]:
+    for meth,pair in [('FM',rate.fm(d9)),('Bottaro',rate.bottaro(d9)),('Bottaro_nontriangular',rate.bottaro_nontriangular(d9)),('Shternin',rate.shternin(d9)),('Alford_adapted',rate.alford(d9))]:
         row[f'Q_{meth}_total_T9_recomputed']=sum(pair)
     rate.T=TK_1e8;rate.T9=.1;rate.HALF_WIDTH=rate.T**2/10
     rows.append(row)
@@ -152,30 +152,30 @@ ax.legend(ncol=2);ax.grid(alpha=.22)
 fig.savefig(ROOT/'DD2_scalar_vector_selfenergies_T8.png',dpi=185)
 fig.savefig(ROOT/'DD2_scalar_vector_selfenergies_T8.pdf');plt.close(fig)
 
-# 4. Four Urca emissivities evaluated at T=1e8 K
+# 4. Five Urca emissivities evaluated at T=1e8 K
 fig,axs=plt.subplots(2,1,sharex=True,figsize=(10.6,8.2),gridspec_kw={'height_ratios':[2.0,1]},constrained_layout=True)
-keys=[('FM','Friman-Maxwell / NSCool','--'),('Bottaro','Bottaro (triangular OPE + rho)','-'),('Shternin','Shternin (propagator enhancement)','-'),('Alford_adapted','Alford (adapted finite-width NWA)','-')]
+keys=[('FM','Friman-Maxwell / NSCool','--'),('Bottaro','Bottaro (triangular OPE + rho)','-'),('Bottaro_nontriangular','Bottaro (nontriangular)','-.'),('Shternin','Shternin (propagator enhancement)','-'),('Alford_adapted','Alford (adapted finite-width NWA)','-')]
 ref=get('Q_FM_total_T8')
-for meth,label,ls in keys:
+for (meth,label,ls), color in zip(keys, ['tab:blue', 'tab:orange', 'tab:purple', 'tab:green', 'tab:red']):
     y=get(f'Q_{meth}_total_T8')
-    c=axs[0].semilogy(x,y,label=label,ls=ls,lw=2.3)[0].get_color()
-    if meth!='FM':axs[1].semilogy(x,y/ref,label=label,color=c,lw=1.9)
+    c=axs[0].semilogy(x,y,label=label,color=color,ls=ls,lw=2.3)[0].get_color()
+    if meth!='FM':axs[1].semilogy(x,y/ref,label=label,color=c,ls=ls,lw=1.9)
 axs[0].set_ylabel(r'Neutrino emissivity $Q_\nu$ (erg cm$^{-3}$ s$^{-1}$)')
 axs[1].set_ylabel('Ratio to FM');axs[1].set_xlabel(r'Baryon density $n_B$ (fm$^{-3}$)')
 axs[0].legend(loc='upper left',fontsize=9);axs[1].legend(loc='upper left',fontsize=8.3)
 for a in axs:a.grid(alpha=.23,which='both')
-fig.suptitle('PT(GRDF2-DD2): four Urca approximations at $T=10^8$ K',fontsize=13)
+fig.suptitle('PT(GRDF2-DD2): five Urca approximations at $T=10^8$ K',fontsize=13)
 
 fig.savefig(ROOT/'DD2_four_URCA_T8.png',dpi=185)
 fig.savefig(ROOT/'DD2_four_URCA_T8.pdf');plt.close(fig)
 
 # 5. Check expected T8 scaling relative to the previously published T9 density scan.
 fig,ax=plt.subplots(figsize=(10.6,5.9),constrained_layout=True)
-for meth,label,ls in keys:
+for (meth,label,ls), color in zip(keys, ['tab:blue', 'tab:orange', 'tab:purple', 'tab:green', 'tab:red']):
     q9=get(f'Q_{meth}_total_T9_recomputed')
     q8=get(f'Q_{meth}_total_T8')
     ratio=q8/(1e-8*q9)
-    ax.plot(x,ratio,ls=ls,lw=2,label=label)
+    ax.plot(x,ratio,color=color,ls=ls,lw=2,label=label)
 ax.axhline(1,ls=':',lw=1,color='0.4')
 ax.set_xlabel(r'$n_B$ (fm$^{-3}$)');ax.set_ylabel(r'$Q(10^8\,\mathrm{K})/[10^{-8}\,Q(10^9\,\mathrm{K})]$')
 ax.set_title('Temperature-scaling consistency: expected $T^8$ behavior')
@@ -198,5 +198,5 @@ for nb in [.16,.3,.5,.7,.9]:
     r=min(rows,key=lambda k:abs(k['nB_fm3']-nb))
     print('nB %.2f Yp %.7f mDn %.3f mDp %.3f mLn %.3f mLp %.3f | Q8'%(
         nb,r['Yp_T8_extrap'],r['mDn_T8_extrap_MeV'],r['mDp_T8_extrap_MeV'],r['mLn_T8_extrap_MeV'],r['mLp_T8_extrap_MeV']),
-        *['%.3e'%r[f'Q_{m}_total_T8'] for m in ['FM','Bottaro','Shternin','Alford_adapted']])
+        *['%.3e'%r[f'Q_{m}_total_T8'] for m in ['FM','Bottaro','Bottaro_nontriangular','Shternin','Alford_adapted']])
 print('All outputs created in',ROOT)

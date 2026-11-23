@@ -15,7 +15,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.ticker import ScalarFormatter
 from compare_compose_four import (setup,make_data,HBARC,MN,MP,ME,MMU,
-                                  fm,bottaro,shternin,alford)
+                                  fm,bottaro,bottaro_nontriangular,shternin,alford)
 ROOT=Path(__file__).resolve().parent
 mic=np.load(ROOT/'DD2_micro_first_two_T.npz')
 com=np.load(ROOT/'DD2_general_composition_first_two_T.npz')
@@ -78,6 +78,7 @@ for nb in DEN:
     m_hot=massfrom(float(nb),hot['Yp'],micro0)
     m_cold_ex=mass_at_T0_extrap(float(nb),d['yp'])
     fe,fmu=fm(d);be,bmu=bottaro(d);se,smu=shternin(d);ae,amu=alford(d)
+    bne, bnmu = bottaro_nontriangular(d)
     rec=dict(nB_fm3=nb,Yp_cold=v_cold[0],Ye_cold=v_cold[1],Ymu_cold=v_cold[2],
         Yp_T01=v_hot[0],Ye_T01=v_hot[1],Ymu_T01=v_hot[2],
         diff_Yp=v_hot[0]-v_cold[0],diff_Ye=v_hot[1]-v_cold[1],diff_Ymu=v_hot[2]-v_cold[2],
@@ -91,6 +92,7 @@ for nb in DEN:
         DU_gap_e_MeV=d['gap_e'],DU_gap_mu_MeV=d['gap_mu'],
         Q_FM_e=fe,Q_FM_mu=fmu,Q_FM_total=fe+fmu,
         Q_Bottaro_e=be,Q_Bottaro_mu=bmu,Q_Bottaro_total=be+bmu,
+        Q_Bottaro_nontriangular_e=bne,Q_Bottaro_nontriangular_mu=bnmu,Q_Bottaro_nontriangular_total=bne+bnmu,
         Q_Shternin_e=se,Q_Shternin_mu=smu,Q_Shternin_total=se+smu,
         Q_Alford_NWA_adapted_e=ae,Q_Alford_NWA_adapted_mu=amu,Q_Alford_NWA_adapted_total=ae+amu)
     rows.append(rec)
@@ -116,7 +118,7 @@ fig.savefig(ROOT/'PT_GRDF2_DD2_cold_vs_0p1MeV.pdf');plt.close(fig)
 
 # Main Urca comparison on same EOS composition, neutron branch where appropriate
 fig,axs=plt.subplots(2,1,sharex=True,figsize=(11,8.1),gridspec_kw={'height_ratios':[2.2,1]},constrained_layout=True)
-methods=[('Q_FM_total','Friman–Maxwell / NSCool','tab:blue','--'),('Q_Bottaro_total','Bottaro (triangular OPE+$\\rho$)','tab:orange','-'),('Q_Shternin_total','Shternin (propagator enhancement)','tab:green','-'),('Q_Alford_NWA_adapted_total','Alford (adapted finite-width NWA)','tab:red','-')]
+methods=[('Q_FM_total','Friman–Maxwell / NSCool','tab:blue','--'),('Q_Bottaro_total','Bottaro (triangular OPE+$\\rho$)','tab:orange','-'),('Q_Bottaro_nontriangular_total','Bottaro (nontriangular)','tab:purple','-.'),('Q_Shternin_total','Shternin (propagator enhancement)','tab:green','-'),('Q_Alford_NWA_adapted_total','Alford (adapted finite-width NWA)','tab:red','-')]
 for col,label,color,style in methods:
     axs[0].semilogy(x,a(col),lw=2.4,ls=style,color=color,label=label)
     if col!='Q_FM_total':axs[1].semilogy(x,a(col)/a('Q_FM_total'),lw=2,color=color,label=label)
@@ -124,14 +126,14 @@ axs[1].axhline(1,lw=1,ls=':',color='0.4')
 axs[0].set_ylabel(r'$Q_\nu$ (erg cm$^{-3}$ s$^{-1}$)');axs[1].set_ylabel('Ratio to FM');axs[1].set_xlabel(r'Baryon density $n_B$ (fm$^{-3}$)')
 axs[0].legend(fontsize=9,loc='upper left');axs[1].legend(fontsize=8.3,loc='upper left')
 for p in axs:p.grid(alpha=.22,which='both')
-fig.suptitle(r'CompOSE PT(GRDF2-DD2): four Urca prescriptions, $T=10^9$ K')
+fig.suptitle(r'CompOSE PT(GRDF2-DD2): five Urca prescriptions, $T=10^9$ K')
 fig.savefig(ROOT/'PT_GRDF2_DD2_four_Urca_T9.png',dpi=195)
 fig.savefig(ROOT/'PT_GRDF2_DD2_four_Urca_T9.pdf');plt.close(fig)
 
 fig,axs=plt.subplots(1,2,figsize=(12.0,4.9),sharex=True,constrained_layout=True)
 for k,lc in [('e','Electron'),('mu','Muon')]:
     sub=axs[0] if k=='e' else axs[1]
-    for name,label,color,style in [('FM','FM','tab:blue','--'),('Bottaro','Bottaro','tab:orange','-'),('Shternin','Shternin','tab:green','-'),('Alford_NWA_adapted','Adapted Alford NWA','tab:red','-')]:
+    for name,label,color,style in [('FM','FM','tab:blue','--'),('Bottaro','Bottaro (triangular)','tab:orange','-'),('Bottaro_nontriangular','Bottaro (nontriangular)','tab:purple','-.'),('Shternin','Shternin','tab:green','-'),('Alford_NWA_adapted','Adapted Alford NWA','tab:red','-')]:
         y=a('Q_'+name+'_'+k);sub.semilogy(x,np.where(y>0,y,np.nan),color=color,ls=style,lw=2,label=label)
     sub.set_title(lc+' channel');sub.set_xlabel(r'$n_B$ (fm$^{-3}$)');sub.grid(alpha=.23,which='both')
 axs[0].set_ylabel(r'$Q_\nu$ (erg cm$^{-3}$ s$^{-1}$)');axs[1].legend(loc='lower right',fontsize=8.5)
@@ -145,4 +147,4 @@ for col in ['diff_Yp','diff_Ye','diff_Ymu','delta_mDn','delta_mDp','delta_mLn','
 for nb in [.16,.2,.3,.5,.7,.9,.98]:
     idx=int(np.argmin(abs(x-nb)));r=rows[idx]
     print('row',nb,'Yp cold/hot',r['Yp_cold'],r['Yp_T01'],'Landau n,p',r['mLn_T01'],r['mLp_T01'],
-        'Q',*(f'{r[k]:.4e}' for k in ['Q_FM_total','Q_Bottaro_total','Q_Shternin_total','Q_Alford_NWA_adapted_total']))
+        'Q',*(f'{r[k]:.4e}' for k in ['Q_FM_total','Q_Bottaro_total','Q_Bottaro_nontriangular_total','Q_Shternin_total','Q_Alford_NWA_adapted_total']))

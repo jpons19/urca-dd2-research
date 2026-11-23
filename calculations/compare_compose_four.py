@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compare four published Urca *approximations* with actual PT(GRDF2-DD2) CompOSE inputs.
+"""Compare five Urca rate prescriptions with actual PT(GRDF2-DD2) CompOSE inputs.
 
 This script is deliberately reproducible without original 182 MB EOS archive:
  - DD2_micro_first_two_T.npz: 4 micro fields extracted from eos.micro at first TWO T slices,
@@ -21,6 +21,7 @@ import csv
 import numpy as np
 from scipy.interpolate import PchipInterpolator, RegularGridInterpolator
 from scipy.integrate import quad
+from bottaro_angular import angular_ratio
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -71,17 +72,39 @@ def fm(d):
     return coeff*d['pe']/HBARC, coeff*d['pm']/HBARC
 
 
+def bottaro_landau(pn):
+    # Preserve the bare-mass normalization of the published couplings.
+    scale = np.pi**2 / (2 * MN * pn)
+    return .7 * scale, 1.1 * scale
+
+
 def bottaro(d):
     pn,pp=d['pn'],d['pp']
-    # Landau coefficients are kept in published bare-mass normalization,
-    # NOT recalibrated with in-medium masses.
-    fp=np.pi**2/(2*MN*pn)*.7
-    g=np.pi**2/(2*MN*pn)*1.1
+    fp,g=bottaro_landau(pn)
     e_pi=pn**2/(pn**2+MPI**2);e_rho=pn**2/(pn**2+MRHO**2)
     alpha=.5*(21/16)*((32/7)*(MPI/FPI)**4*(fp-g)**2+2*(e_pi-CRHO*e_rho)**2)
     coeff=2*11513*G**2*GA**2*FPI**4/(120960*np.pi*MPI**4)
     coeff*=d['mLn']**3*d['mLp']*pp*T**8*alpha*BETA*NATURAL_TO_CGS
     return coeff,coeff*d['pm']/d['mu'] if d['pm'] else 0.
+
+
+def bottaro_meson_couplings(q2, g):
+    rho = CRHO * q2 / (q2 + MRHO**2)
+    pion = q2 / (q2 + MPI**2)
+    scale = (FPI / MPI)**2
+    # The constant isovector spin coupling g-prime equals g in this model.
+    return g - scale * rho, -scale * (pion - rho)
+
+
+def bottaro_nontriangular(d):
+    """Return electron and muon emissivities with Bottaro's full angular integral."""
+    pn, pp = d['pn'], d['pp']
+    fp, g = bottaro_landau(pn)
+    qe, qmu = bottaro(d)
+    electron = angular_ratio(pn, pp, d['pe'], fp, g, GA, bottaro_meson_couplings)
+    muon = angular_ratio(pn, pp, d['pm'], fp, g, GA, bottaro_meson_couplings)
+    # Restore the electron velocity approximated by unity in bottaro().
+    return qe * (d['pe'] / d['mu']) * electron, qmu * muon
 
 
 def RA(d,pl):
@@ -159,6 +182,7 @@ def run():
     for nb in ns:
         d=make_data(float(nb),cold_i,iv0,iv1)
         fe,fm_=fm(d);be,bm=bottaro(d);se,sm=shternin(d);ae,am=alford(d)
+        bne, bnm = bottaro_nontriangular(d)
         row=dict(nB=nb,Yp=d['yp'],Ye=d['ye'],Ymu=d['ym'],pFn_MeV=d['pn'],pFp_MeV=d['pp'],pFe_MeV=d['pe'],pFmu_MeV=d['pm'],
                  mu_e_MeV=d['mu'],mDirac_n_MeV=d['mnD'],mDirac_p_MeV=d['mpD'],mLandau_n_MeV=d['mLn'],mLandau_p_MeV=d['mLp'],
                  V_n_MeV=d['Vn'],V_p_MeV=d['Vp'],S_n_MeV=d['Sn'],S_p_MeV=d['Sp'],
@@ -166,13 +190,14 @@ def run():
                  charge_residual=d['charge'],micro_temperature_sensitivity_MeV=d['micro_Tchange_max'],
                  DU_gap_e_MeV=d['gap_e'],DU_gap_mu_MeV=d['gap_mu'],
                  FM_e=fe,FM_mu=fm_,FM_total=fe+fm_,Bottaro_e=be,Bottaro_mu=bm,Bottaro_total=be+bm,
+                 Bottaro_nontriangular_e=bne,Bottaro_nontriangular_mu=bnm,Bottaro_nontriangular_total=bne+bnm,
                  Shternin_e=se,Shternin_mu=sm,Shternin_total=se+sm,Alford_adapted_e=ae,Alford_adapted_mu=am,Alford_adapted_total=ae+am)
         rows.append(row)
     out=HERE/'PT_GRDF2_DD2_Urca_T9.csv'
     with out.open('w',newline='') as f:
         w=csv.DictWriter(f,fieldnames=list(rows[0]));w.writeheader();w.writerows(rows)
     x=np.array([r['nB'] for r in rows]); reference=np.array([r['FM_total'] for r in rows]);
-    names=[('FM_total','Friman–Maxwell / NSCool','--'),('Bottaro_total','Bottaro (triangular, pion + rho)','-'),('Shternin_total','Shternin (propagator enhancement)','-'),('Alford_adapted_total','Alford (adapted finite-width NWA)','-')]
+    names=[('FM_total','Friman–Maxwell / NSCool','--'),('Bottaro_total','Bottaro (triangular, pion + rho)','-'),('Bottaro_nontriangular_total','Bottaro (nontriangular)','-.'),('Shternin_total','Shternin (propagator enhancement)','-'),('Alford_adapted_total','Alford (adapted finite-width NWA)','-')]
     fig,(ax,ar)=plt.subplots(2,1,sharex=True,figsize=(10.8,8.5),gridspec_kw={'height_ratios':[2.3,1],'hspace':.08})
     for key,name,style in names:
         y=np.array([r[key] for r in rows]);obj=ax.semilogy(x,y,ls=style,lw=2.25,label=name)[0]

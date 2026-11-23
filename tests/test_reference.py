@@ -31,15 +31,30 @@ class EOSAndRateTests(unittest.TestCase):
             pf=x[f'pF{l}_MeV']
             np.testing.assert_allclose(ml, np.hypot(pf,md),rtol=2e-5,atol=.005)
     def test_emissivity_channel_sums(self):
-        for model in ['FM','Bottaro','Shternin','Alford_adapted']:
+        for model in ['FM','Bottaro','Bottaro_nontriangular','Shternin','Alford_adapted']:
             np.testing.assert_allclose(self.data[f'Q_{model}_total_T8'],self.data[f'Q_{model}_e_T8']+self.data[f'Q_{model}_mu_T8'])
             self.assertTrue(np.all(np.isfinite(self.data[f'Q_{model}_total_T8'])))
+    def test_bottaro_triangular_limit(self):
+        pn = 340.0
+        fp, g = c.bottaro_landau(pn)
+        ratio = c.angular_ratio(
+            pn, .34, .28, fp, g, c.GA, c.bottaro_meson_couplings
+        )
+        self.assertAlmostEqual(ratio, 1.0, places=5)
+
+    def test_bottaro_absent_muon_channel(self):
+        data = c.make_data(.16, self.cold_i, self.iv0)
+        data['pm'] = 0.0
+        electron, muon = c.bottaro_nontriangular(data)
+        self.assertGreater(electron, 0.0)
+        self.assertEqual(muon, 0.0)
+
     def test_direct_recalculation_at_three_points(self):
         data=self.data
         for nb in [.16,.50,.90]:
             row=data[np.argmin(abs(data['nB_fm3']-nb))]
             d=c.make_data(float(nb),self.cold_i,self.iv0)
-            for model,fun in [('FM',c.fm),('Bottaro',c.bottaro),('Shternin',c.shternin),('Alford_adapted',c.alford)]:
+            for model,fun in [('FM',c.fm),('Bottaro',c.bottaro),('Bottaro_nontriangular',c.bottaro_nontriangular),('Shternin',c.shternin),('Alford_adapted',c.alford)]:
                 q=sum(fun(d))
                 target=float(row[f'Q_{model}_total_T9_recomputed'])
                 # The fast runner uses linear interpolation of micro, while the final

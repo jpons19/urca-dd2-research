@@ -1,6 +1,6 @@
 # Urca emissivities with CompOSE PT(GRDF2-DD2)
 
-A reproducible **research prototype** comparing four literature-inspired approaches to neutron-star modified Urca / collisional charged-current neutrino emission, using **the same real CompOSE PT(GRDF2-DD2)** cold composition and general-purpose microscopic fields.
+A reproducible **research prototype** comparing five rate prescriptions from four literature-inspired approaches to neutron-star modified Urca / collisional charged-current neutrino emission, using **the same real CompOSE PT(GRDF2-DD2)** cold composition and general-purpose microscopic fields.
 
 **Status:** 22 November 2026. **Temperatures:** \(10^8\) and \(10^9\) K. **Core density:** \(0.16\)–\(0.98\) fm\(^{-3}\). **Particle channels:** electron and muon, treated separately then summed.
 
@@ -12,7 +12,7 @@ A reproducible **research prototype** comparing four literature-inspired approac
 |---|---|
 | `report/summary.html` | Standalone illustrated research report, works offline |
 | `figures/` | Original calculation figures in PNG and PDF |
-| `calculations/compare_compose_four.py` | Four rate prescriptions, setup and optional T9 scan |
+| `calculations/compare_compose_four.py` | Five rate prescriptions, setup and optional T9 scan |
 | `calculations/build_final.py` | 0.1 MeV / cold comparison and T9 figure regeneration |
 | `calculations/run_dd2_T8_reference.py` | \(T^2\) extrapolation to T8, beta equilibrium and T8 figures |
 | `calculations/DD2_*` | Reduced CompOSE inputs, including the first two T slices |
@@ -56,11 +56,11 @@ This will overwrite the supplied reduced inputs; rerun the calculations and test
 ## Model coverage at a glance
 
 - **Friman–Maxwell (1979), NSCool neutron branch:** OPE-based historical `alpha_n` and `beta_n` suppression factors, fixed virtual denominators, legacy muon extension.
-- **Bottaro et al. (2024), triangular neutron branch:** OPE + magnetic rho exchange + phenomenological Landau terms, `beta_n=0.68`; constant denominators. **Not** their full nontriangular formula.
+- **Bottaro et al. (2024), triangular neutron branch:** OPE + magnetic rho exchange + phenomenological Landau terms, `beta_n=0.68`; constant denominators. The nontriangular curve uses the same nuclear interaction and includes finite proton and lepton momenta in the four-dimensional angular integral.
 - **Shternin, Baldo & Haensel (2018), approximate neutron branch:** `0.6 R_A + 0.2 R_B` with momentum-dependent, zero-width propagators. **Not** a new self-consistent Brueckner calculation for DD2.
 - **Alford, Haber & Zhang (2024), adapted NWA:** Breit–Wigner *Dirac-mass* convolution with width `W=T^2/(5 MeV)` applied to a *degenerate leading-order* direct Urca kernel. **Not** the paper's full relativistic finite-temperature response; omitted medium vertex corrections.
 
-**Do not treat the four curves as comparable uncertainty-band realizations of one systematic many-body calculation.** Their diagrammatic content differs. None of the DU Fermi-momentum triangle gaps crosses zero in the tabulated comparison range; the threshold crossover is not tested here.
+**Do not treat the five curves as comparable uncertainty-band realizations of one systematic many-body calculation.** Their diagrammatic content differs. None of the DU Fermi-momentum triangle gaps crosses zero in the tabulated comparison range; the threshold crossover is not tested here.
 
 ## Primary documents
 
@@ -68,7 +68,7 @@ This will overwrite the supplied reduced inputs; rerun the calculations and test
 - [`docs/VALIDATION.md`](docs/VALIDATION.md) – existing checks, quantitative values and what is still unverified.
 - [`docs/ROADMAP.md`](docs/ROADMAP.md) – ordered research tasks and suggested issue list.
 - [`docs/PROVENANCE.md`](docs/PROVENANCE.md) – CompOSE IDs, input-file hashes and extraction.
-- [`docs/PRIOR_AUDIT.md`](docs/PRIOR_AUDIT.md) – related earlier algebraic audit, not part of the four-rate validation.
+- [`docs/PRIOR_AUDIT.md`](docs/PRIOR_AUDIT.md) – spin–isospin audit underlying the nontriangular calculation.
 - [`docs/REFERENCES.md`](docs/REFERENCES.md) – literature and CompOSE catalogue links.
 
 ## GitHub usage

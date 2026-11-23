@@ -3,7 +3,7 @@
 ## High priority — reproducibility and microscopic validity
 
 1. **Implement full finite-T Alford charged-current response.** Replace the degenerate DU kernel inside the Breit–Wigner mass integral; validate DU limit, neutrino/antineutrino detailed balance and behavior across both DU thresholds.
-2. **Implement Bottaro's nontriangular neutron branch**, with corrected explicit spin/isospin amplitudes; test positivity and angular Jacobian. Include an independently constrained composition and numerical convergence checks.
+2. **Reproduce Bottaro Fig. 6** with an independently obtained APR stellar profile and composition. The nontriangular neutron branch is implemented and checked against the triangular limit on the DD2 grids.
 3. **Reproduce Shternin's approximation from explicit propagators** and assess sensitivity to effective masses, interaction and near-threshold behavior. Do not multiply an incompatible emissivity by an enhancement calibrated to another interaction without matching.
 4. **EOS broader than current core grid:** obtain an RMF model that actually opens the electron DU threshold in tabulated density range, to test finite-width crossover. Current GRDF2-DD2 remains below threshold through 0.98 fm⁻³.
 

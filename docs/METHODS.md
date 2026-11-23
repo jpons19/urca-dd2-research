@@ -34,7 +34,9 @@ Define `eta_M=pFn²/(pFn²+m_M²)` and
 
 `alpha_B = (1/2)(21/16) [ (32/7)(m_pi/f_pi)^4 (f'-g)^2 + 2(eta_pi-C_rho*eta_rho)^2 ]`.
 
-The neutron-branch emissivity prefactor is directly implemented from their Eq. (3.28), with `mL_n^3*mL_p*pFp*T^8*alpha_B*beta` and the lepton correction `1+pFmu/mu_e`. Does not incorporate their nontriangular Eq. (3.34).
+The neutron-branch emissivity prefactor is directly implemented from their Eq. (3.28), with `mL_n^3*mL_p*pFp*T^8*alpha_B*beta` and the lepton correction `1+pFmu/mu_e`. This expression supplies the triangular baseline.
+
+The nontriangular prescription evaluates Eq. (3.34) for each lepton using the allowed domain in Eq. (3.32). It reconstructs the four momentum transfers and integrates the direct, exchange and trace-verified interference terms using a fixed scrambled Sobol sequence of 16,384 points. The full angular integral is normalized to its triangular limit with the same DD2 Landau masses, couplings, short-range factor and constant virtual denominators. The electron channel retains the lepton velocity that is approximated by unity in the triangular baseline.
 
 ## Shternin, Baldo and Haensel
 
@@ -50,7 +52,8 @@ The conventional neutron-branch models have `Q∝T⁸` when composition/fields a
 
 ## Code map
 
-- `calculations/compare_compose_four.py`: constant definitions, all four rate functions `fm`, `bottaro`, `shternin`, `alford`, analytic `RA/RB` and NWA quadrature.
+- `calculations/compare_compose_four.py`: constant definitions, five rate functions including `bottaro_nontriangular`, analytic `RA/RB` and NWA quadrature.
+- `calculations/bottaro_angular.py`: direct and exchange amplitudes, interference, and four-dimensional quadrature.
 - `calculations/build_final.py`: T9 source interpolation, beta-equilibrium diagnostic and plots.
 - `calculations/run_dd2_T8_reference.py`: low-T T² extrapolation, T8 solution, T8 rates, scaling check and five reference plots.
 - `calculations/test_*.py`: numerical regression checks on generated outputs.

@@ -34,11 +34,11 @@ python calculations/run_dd2_T8_reference.py
 
 ### What has not been independently verified
 
-- Complete Bottaro 4D angular integral or the corrected published nontriangular interference formula; the plotted Bottaro curve uses the **triangular** formula only.
+- Independent reproduction of Bottaro Fig. 6 with the original APR stellar profile. The DD2 nontriangular curve uses the trace-verified interference expression, recovers the triangular limit and has been checked for numerical convergence over the DD2 grid.
 - Reproduction of Shternin's original Brueckner scattering calculation with DD2.
 - Alford's full finite-temperature relativistic polarization tensor, in-medium weak-vertex corrections or a conserving approximation.
 - A near-threshold DU/MU crossover (the GRDF2-DD2 cold composition never crosses the DU triangle threshold through `nB=0.98 fm^-3`).
 - Medium-broadened nucleon widths consistent with the same EOS and nuclear interaction.
 - Equivalence of the old FM SRC factor `beta_n=0.68` with the retained rho-meson correction.
 
-**Warnings for future contributors:** Two closely spaced T slices are used for T² extrapolation; precision of temperature differences is not precision of microscopic emissivity. Treat differences between the four models as model-dependent, not error bars. Before merging scientific revisions, add tests at the level of the matrix element, angular integration and continuum limits.
+**Warnings for future contributors:** Two closely spaced T slices are used for T² extrapolation; precision of temperature differences is not precision of microscopic emissivity. Treat differences between the five prescriptions as model-dependent, not error bars. Before merging scientific revisions, add tests at the level of the matrix element, angular integration and continuum limits.
