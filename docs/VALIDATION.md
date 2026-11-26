@@ -42,3 +42,7 @@ python calculations/run_dd2_T8_reference.py
 - Equivalence of the old FM SRC factor `beta_n=0.68` with the retained rho-meson correction.
 
 **Warnings for future contributors:** Two closely spaced T slices are used for T² extrapolation; precision of temperature differences is not precision of microscopic emissivity. Treat differences between the five prescriptions as model-dependent, not error bars. Before merging scientific revisions, add tests at the level of the matrix element, angular integration and continuum limits.
+
+## Scope of the 26 November pion-softening documentation update
+
+The tests and numerical evidence above validate **only the pre-existing DD2 and four-approach baseline**. The proposed screening-mass and collective-pion extensions are not yet merged or tested; see [PION_SOFTENING.md](PION_SOFTENING.md). The reference data, baseline plots and calculation scripts were deliberately left unchanged. This distinction prevents interpreting exploratory fixed-mass ratios or the MMU review's approximate scalings as validated emissivities from our code.

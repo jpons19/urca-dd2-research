@@ -7,6 +7,16 @@
 3. **Reproduce Shternin's approximation from explicit propagators** and assess sensitivity to effective masses, interaction and near-threshold behavior. Do not multiply an incompatible emissivity by an enhancement calibrated to another interaction without matching.
 4. **EOS broader than current core grid:** obtain an RMF model that actually opens the electron DU threshold in tabulated density range, to test finite-width crossover. Current GRDF2-DD2 remains below threshold through 0.98 fm⁻³.
 
+## Pion softening and medium-modified Urca — new workstream (26 November 2026)
+
+Read [PION_SOFTENING.md](PION_SOFTENING.md) before introducing any new 'enhancement factor'. Keep the DD2 baseline scripts, outputs, and original approximate prescriptions unchanged initially.
+
+1. **Documentation / physics bookkeeping (completed in this commit):** identify OPE screening-mass substitutions versus the collective pion gap; distinguish neutral/charged modes, pion/weak vertex corrections, additional weak diagrams, and potential overlap with rho, Landau terms, SRC beta, Shternin propagators and NWA widths.
+2. **Controlled Bottaro scan (not yet implemented):** reproduce the historical pion mass limit; vary a fixed-coupling screening denominator in triangular and nontriangular amplitudes, preserving the original rho, Landau and SRC terms. Validate electron/muon branches and Sobol convergence.
+3. **Collective propagator extension (not yet implemented):** parametrized D_pi(omega,q;n) and damping with documented neutral/charged modes, stability conditions and explicit vertex choices. Do not equate this with the full MMU formalism.
+4. **Consistent MMU diagrams (research):** include Voskresensky's intermediate-state weak-emission mechanisms in addition to softened pion exchange. Establish diagrammatic overlap before combining any correction factors.
+5. **Matched scattering/width comparison (research):** derive interaction-dependent Shternin ingredients and nucleon widths for the adapted Alford calculation, with conserving weak vertices as the longer-term objective.
+
 ## Medium priority — nuclear physics
 
 5. Separate on-shell scattering amplitudes, Landau quasiparticle interactions and Born potentials; standardize antisymmetrization and spin/isospin conventions.
@@ -24,7 +34,7 @@
 
 ### Proposed issue labels
 
-`physics-validation`, `EOS`, `modified-urca`, `finite-width`, `numerics`, `tests`, `documentation`.
+`physics-validation`, `pion-softening`, `MMU`, `EOS`, `modified-urca`, `finite-width`, `numerics`, `tests`, `documentation`.
 
 ## Definition of done for a physics change
 

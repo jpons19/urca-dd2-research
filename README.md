@@ -2,9 +2,13 @@
 
 A reproducible **research prototype** comparing five rate prescriptions from four literature-inspired approaches to neutron-star modified Urca / collisional charged-current neutrino emission, using **the same real CompOSE PT(GRDF2-DD2)** cold composition and general-purpose microscopic fields.
 
-**Status:** 22 November 2026. **Temperatures:** \(10^8\) and \(10^9\) K. **Core density:** \(0.16\)–\(0.98\) fm\(^{-3}\). **Particle channels:** electron and muon, treated separately then summed.
+**Status:** 26 November 2026 (documentation update; numerical baseline remains from 22–23 November). **Temperatures:** \(10^8\) and \(10^9\) K. **Core density:** \(0.16\)–\(0.98\) fm\(^{-3}\). **Particle channels:** electron and muon, treated separately then summed.
 
 **Start with [`report/summary.html`](report/summary.html)** (self-contained HTML with embedded figures and numerical table). The repo is designed for further research, **not yet a production cooling microphysics library**.
+
+## Current research direction: pion softening and medium-modified Urca
+
+**New (26 November 2026):** See [the pion-softening research note](docs/PION_SOFTENING.md) and its [HTML companion](report/pion_softening.html). It consolidates our Friman–Maxwell/Bottaro/Shternin/Alford comparison with Voskresensky's dressed-pion and intermediate-state diagrams. **This is documentation, not a new validated emissivity model.** The previous T8/T9 CSV outputs and benchmark plots are unchanged.
 
 ## Contents
 
@@ -70,6 +74,7 @@ This will overwrite the supplied reduced inputs; rerun the calculations and test
 - [`docs/PROVENANCE.md`](docs/PROVENANCE.md) – CompOSE IDs, input-file hashes and extraction.
 - [`docs/PRIOR_AUDIT.md`](docs/PRIOR_AUDIT.md) – spin–isospin audit underlying the nontriangular calculation.
 - [`docs/REFERENCES.md`](docs/REFERENCES.md) – literature and CompOSE catalogue links.
+- [`docs/PION_SOFTENING.md`](docs/PION_SOFTENING.md) – screening-mass vs collective-mode physics, Voskresensky MMU, overlap cautions and numerical work plan.
 
 ## GitHub usage
 
@@ -83,4 +88,4 @@ git remote add origin https://github.com/YOUR-ACCOUNT/YOUR-REPO.git
 git push -u origin main
 ```
 
-The included GitHub Actions workflow runs quick baseline tests on each push/pull request; use `make all` for full local regeneration. Decide on a project license before making the repository public. Research papers and original CompOSE distributions have their own citation and reuse requirements. The `.gitignore` prevents accidentally adding the large original EOS ZIPs.
+The included GitHub Actions workflow runs quick baseline tests on each push/pull request; use `make all` for full local regeneration. The repository is currently public; decide on a project license and reuse policy before wider distribution. Research papers and original CompOSE distributions have their own citation and reuse requirements. The `.gitignore` prevents accidentally adding the large original EOS ZIPs.

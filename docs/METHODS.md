@@ -57,3 +57,7 @@ The conventional neutron-branch models have `Q∝T⁸` when composition/fields a
 - `calculations/build_final.py`: T9 source interpolation, beta-equilibrium diagnostic and plots.
 - `calculations/run_dd2_T8_reference.py`: low-T T² extrapolation, T8 solution, T8 rates, scaling check and five reference plots.
 - `calculations/test_*.py`: numerical regression checks on generated outputs.
+
+## Proposed pion softening / MMU extension (documentation only)
+
+See [PION_SOFTENING.md](PION_SOFTENING.md) for a source-grounded differentiation between a constant screening-mass change in OPE, dressed neutral/charged pion modes, Landau–Migdal vertex corrections, intermediate-state weak radiation, and overlap with Shternin's near-on-shell propagators or Alford's phenomenological collision widths. **No pion-softening rate is implemented or validated on main in this update.** Our FM/Bottaro/Shternin/Alford baseline calculations and T8/T9 outputs are unchanged.
