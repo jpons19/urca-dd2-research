@@ -46,3 +46,7 @@ python calculations/run_dd2_T8_reference.py
 ## Scope of the 26 November pion-softening documentation update
 
 The tests and numerical evidence above validate **only the pre-existing DD2 and four-approach baseline**. The proposed screening-mass and collective-pion extensions are not yet merged or tested; see [PION_SOFTENING.md](PION_SOFTENING.md). The reference data, baseline plots and calculation scripts were deliberately left unchanged. This distinction prevents interpreting exploratory fixed-mass ratios or the MMU review's approximate scalings as validated emissivities from our code.
+
+## Commit 2 static screening-mass extension (26 November 2026)
+
+A separate test module (`tests/test_pion_softening.py`) checks exact vacuum-mass recovery of pion couplings and triangular/nontriangular rates, the fixed-q pure-OPE limit, positive emissivities, and a 5% tolerance for a 2^12 versus 2^14 Sobol comparison at one density. A 36-density scan at T9 was generated locally; example lambda=0.5 total emissivity ratios at 0.160, 0.511, 0.910 fm^-3 are (triangular/nontriangular) (1.3529/1.3319), (1.2207/1.1699), (1.1862/1.1117). **These are toy screening-mass calculations, not collective MMU.** Full multi-density numerical convergence and independent microscopic validation remain open. See [PION_SCREENING_SCAN.md](PION_SCREENING_SCAN.md).

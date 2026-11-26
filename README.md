@@ -2,13 +2,13 @@
 
 A reproducible **research prototype** comparing five rate prescriptions from four literature-inspired approaches to neutron-star modified Urca / collisional charged-current neutrino emission, using **the same real CompOSE PT(GRDF2-DD2)** cold composition and general-purpose microscopic fields.
 
-**Status:** 26 November 2026 (documentation update; numerical baseline remains from 22–23 November). **Temperatures:** \(10^8\) and \(10^9\) K. **Core density:** \(0.16\)–\(0.98\) fm\(^{-3}\). **Particle channels:** electron and muon, treated separately then summed.
+**Status:** 26 November 2026 (static screening-mass study implemented; original numerical baseline remains intact). **Temperatures:** \(10^8\) and \(10^9\) K. **Core density:** \(0.16\)–\(0.98\) fm\(^{-3}\). **Particle channels:** electron and muon, treated separately then summed.
 
 **Start with [`report/summary.html`](report/summary.html)** (self-contained HTML with embedded figures and numerical table). The repo is designed for further research, **not yet a production cooling microphysics library**.
 
 ## Current research direction: pion softening and medium-modified Urca
 
-**New (26 November 2026):** See [the pion-softening research note](docs/PION_SOFTENING.md) and its [HTML companion](report/pion_softening.html). It consolidates our Friman–Maxwell/Bottaro/Shternin/Alford comparison with Voskresensky's dressed-pion and intermediate-state diagrams. **This is documentation, not a new validated emissivity model.** The previous T8/T9 CSV outputs and benchmark plots are unchanged.
+**New (26 November 2026):** See [the pion-softening research note](docs/PION_SOFTENING.md) and its [HTML companion](report/pion_softening.html). It consolidates our Friman–Maxwell/Bottaro/Shternin/Alford comparison with Voskresensky's dressed-pion and intermediate-state diagrams. **Commit 2 adds a tested fixed-DD2 static screening-mass sensitivity study; this is not full MMU.** The previous T8/T9 CSV outputs and benchmark plots are unchanged.
 
 ## Contents
 
@@ -16,6 +16,7 @@ A reproducible **research prototype** comparing five rate prescriptions from fou
 |---|---|
 | `report/summary.html` | Standalone illustrated research report, works offline |
 | `figures/` | Original calculation figures in PNG and PDF |
+| `calculations/pion_softening/` | New static screening-mass Bottaro triangular/nontriangular experiment (see docs/PION_SCREENING_SCAN.md) |
 | `calculations/compare_compose_four.py` | Five rate prescriptions, setup and optional T9 scan |
 | `calculations/build_final.py` | 0.1 MeV / cold comparison and T9 figure regeneration |
 | `calculations/run_dd2_T8_reference.py` | \(T^2\) extrapolation to T8, beta equilibrium and T8 figures |
@@ -75,6 +76,7 @@ This will overwrite the supplied reduced inputs; rerun the calculations and test
 - [`docs/PRIOR_AUDIT.md`](docs/PRIOR_AUDIT.md) – spin–isospin audit underlying the nontriangular calculation.
 - [`docs/REFERENCES.md`](docs/REFERENCES.md) – literature and CompOSE catalogue links.
 - [`docs/PION_SOFTENING.md`](docs/PION_SOFTENING.md) – screening-mass vs collective-mode physics, Voskresensky MMU, overlap cautions and numerical work plan.
+- [`docs/PION_SCREENING_SCAN.md`](docs/PION_SCREENING_SCAN.md) – implemented fixed-background Bottaro toy scan, reproduction commands, outputs and numerical checks.
 
 ## GitHub usage
 

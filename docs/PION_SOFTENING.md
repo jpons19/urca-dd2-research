@@ -93,3 +93,7 @@ Phenomenological multiplicative factors extracted from *different* NN interactio
 - CompOSE PT(GRDF2-DD2), [cold EOS 302](https://compose.obspm.fr/eos/302) and [general EOS 301](https://compose.obspm.fr/eos/301).
 
 The original article PDFs have not been committed to this public repository; link to publishers/arXiv/ADS instead. The **numerical pion-screening sensitivity scan discussed in chat has not been independently integrated or validated in GitHub** and is deliberately excluded from the canonical baseline and this documentation-only commit.
+
+## Implementation status (26 November 2026)
+
+The first controlled fixed-DD2 screening-mass experiment is now implemented separately in `calculations/pion_softening/`. It uses both Bottaro angular treatments and does not change any original four-approach baseline files. The source, reproduction command, assumptions and initial validation results are documented in [PION_SCREENING_SCAN.md](PION_SCREENING_SCAN.md). The collective-propagator, new weak-current diagrams, Shternin recalibration and nucleon-width stages remain **unimplemented**.
