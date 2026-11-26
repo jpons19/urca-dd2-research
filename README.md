@@ -4,9 +4,10 @@ This repository has **two deliberately separate tracks**. The theory track is an
 
 ## Start here
 
-1. **Theory:** [`report/urca_physics_comparison.html`](report/urca_physics_comparison.html) — the **master comparison** of physical ingredients in Friman–Maxwell, Bottaro, Shternin, Alford and Voskresensky, with expandable paper-by-paper explanations and bibliographic links. Read this first for scientific interpretation. **It contains no EOS-specific assumptions, numerical results or code-derived claims.**
+1. **Theory:** [`report/urca_physics_comparison.html`](report/urca_physics_comparison.html) — the **master comparison** of physical ingredients in Friman–Maxwell, Bottaro, Shternin, Alford, Sedrakian and Voskresensky, with expandable paper-by-paper explanations and bibliographic links. Read this first for scientific interpretation. **It contains no EOS-specific assumptions, numerical results or code-derived claims.**
 2. **Computational research:** [`report/summary.html`](report/summary.html) — self-contained numerical DD2 report; [`docs/METHODS.md`](docs/METHODS.md) and [`docs/VALIDATION.md`](docs/VALIDATION.md) explain implementation and limitations.
-3. **Working procedure for humans and assistants:** [`AGENTS.md`](AGENTS.md) — the editorial/research protocol governing updates to both tracks. [`CONTRIBUTING.md`](CONTRIBUTING.md) provides the short checklist.
+3. **Open theoretical questions:** [`docs/THEORY_OPEN_QUESTIONS.md`](docs/THEORY_OPEN_QUESTIONS.md) — a source-aware issue register, including the unsoftened-pion intermediate-state current question.
+4. **Working procedure for humans and assistants:** [`AGENTS.md`](AGENTS.md) — the editorial/research protocol governing updates to both tracks. [`CONTRIBUTING.md`](CONTRIBUTING.md) provides the short checklist.
 
 ## Numerical research prototype
 
@@ -26,6 +27,7 @@ The computational work is designed for further research, **not yet a production 
 |---|---|
 | `report/urca_physics_comparison.html` | **Master, EOS-independent theoretical comparison; expandable source notes** |
 | `AGENTS.md` | Durable editorial and research instructions |
+| `docs/THEORY_OPEN_QUESTIONS.md` | EOS-independent open-issues register, with proposed A/B/C comparison |
 | `report/summary.html` | Numerical, EOS-specific illustrated research report, works offline |
 | `report/pion_softening.html` | Older DD2-specific numerical companion (not the theory master) |
 | `figures/` | Original calculation figures in PNG and PDF |
@@ -88,6 +90,7 @@ This will overwrite the supplied reduced inputs; rerun the calculations and test
 - [`docs/PROVENANCE.md`](docs/PROVENANCE.md) – CompOSE IDs, input-file hashes and extraction.
 - [`docs/PRIOR_AUDIT.md`](docs/PRIOR_AUDIT.md) – spin–isospin audit underlying the nontriangular calculation.
 - [`docs/REFERENCES.md`](docs/REFERENCES.md) – original publications and their links.
+- [`docs/THEORY_OPEN_QUESTIONS.md`](docs/THEORY_OPEN_QUESTIONS.md) – unresolved physical questions and criteria for addressing them.
 - [`report/urca_physics_comparison.html`](report/urca_physics_comparison.html) – **authoritative comparative theory matrix**; contributions are incorporated approach by approach.
 - [`docs/PION_SOFTENING.md`](docs/PION_SOFTENING.md) – screening-mass vs collective-mode physics, Voskresensky MMU, overlap cautions and numerical work plan.
 - [`docs/PION_SCREENING_SCAN.md`](docs/PION_SCREENING_SCAN.md) – implemented fixed-background Bottaro toy scan, reproduction commands, outputs and numerical checks.

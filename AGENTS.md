@@ -22,6 +22,10 @@ The repository is a scientific research prototype, not a validated production co
 
 **Current open source-verification item:** The table/page attribution of the historical modified-Urca short-range factor beta_n≈0.68 to FM79, Table 1, printed ApJ p.552, was discussed but the exact scanned page was not independently reopened when preparing theory comparison v2. Retain the qualification until directly inspected. Cite the original [FM79 ADS scan](https://adsabs.harvard.edu/pdf/1979ApJ...232..541F). Recheck precise formula/definition before claiming historical priority, and maintain distinction from rho exchange.
 
+## Active theoretical open issues
+
+Maintain [docs/THEORY_OPEN_QUESTIONS.md](docs/THEORY_OPEN_QUESTIONS.md) alongside the master HTML. The key unsettled issue is the size of intermediate-pion and particle–hole weak currents without strong pion softening. Distinguish their existence, their enhancement in Voskresensky’s specific medium model, and their unknown contribution with a different realistic NN interaction. The matched A/B/C comparison is a proposal, not completed numerical work. Do not treat neutral-current bremsstrahlung or conventional BHF modified-Urca as direct tests of omitted charged-current two-body weak currents.
+
 ## Numerical changes follow a different protocol
 
 - Specify EOS and composition, units, channels, mass convention (Dirac versus Landau), interaction assumptions, and the exact source formulas implemented.
@@ -41,6 +45,7 @@ The repository is a scientific research prototype, not a validated production co
 ## Practical entry points
 
 - Theory overview: [report/urca_physics_comparison.html](report/urca_physics_comparison.html)
+- Open issues: [docs/THEORY_OPEN_QUESTIONS.md](docs/THEORY_OPEN_QUESTIONS.md)
 - Source list: [docs/REFERENCES.md](docs/REFERENCES.md)
 - Numerical report: [report/summary.html](report/summary.html)
 - Numerical methods and validation: [docs/METHODS.md](docs/METHODS.md), [docs/VALIDATION.md](docs/VALIDATION.md)
