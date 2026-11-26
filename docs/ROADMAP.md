@@ -48,3 +48,7 @@ Read [PION_SOFTENING.md](PION_SOFTENING.md) before introducing any new 'enhancem
 ## Definition of done for a physics change
 
 Document input data and conventions, give a mathematical derivation or source, compare with a known limit, add unit/regression tests, report numerical convergence (including density and temperature), and state whether a change is intended to alter existing published plots.
+
+## Alford NWA theory consolidation (26 November 2026)
+
+The EOS-independent master HTML now separates the strong-interaction input from the weak response: the earlier Paris-potential Brueckner calculation supplies the phenomenological mass width W, whereas Alford does not calculate an explicit NN scattering matrix in the charged-current kernel. The width's spectral convolution (Eq. 10) yields a mathematically smooth finite-width crossover and a direct-Urca narrow-width limit, **but not a proof of microscopic modified-Urca accuracy**. The first-level NWA omits crossed/interference/vertex terms and energy/momentum-dependent self-energies; the paper's Eq. (10) concerns reaction rates, while emissivities require energy weighting. The theory overview should not use EOS-specific numerical applications or output curves. Next: systematic medium weak-vertex and Voskresensky diagram comparison.
