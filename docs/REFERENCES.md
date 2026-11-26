@@ -1,4 +1,7 @@
-# References
+# References and primary-source index
+
+For theoretical differences among original papers, the master self-contained comparison is [`report/urca_physics_comparison.html`](../report/urca_physics_comparison.html). It is **EOS-independent**. Paper-specific source claims should be checked against the primary works and pinpointed to pages/equations; unverified references remain explicitly flagged. The implementation-specific DD2 methods belong in [`METHODS.md`](METHODS.md), not in that comparative HTML.
+
 
 1. B. L. Friman and O. V. Maxwell, “Neutrino Emissivities of Neutron Stars,” *Astrophysical Journal* **232** (1979), 541–557; [original NASA ADS scan](https://adsabs.harvard.edu/pdf/1979ApJ...232..541F). Historical FOPE / NSCool baseline.
 2. S. Bottaro, A. Caputo and D. F. G. Fiorillo, “Neutrino emission in cold neutron stars: Bremsstrahlung and modified urca rates reexamined,” *JCAP* **11** (2024), 015; [arXiv:2406.18640v2](https://arxiv.org/abs/2406.18640).

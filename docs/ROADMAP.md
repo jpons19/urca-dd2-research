@@ -1,5 +1,12 @@
 # Research roadmap / suggested GitHub issues
 
+## Primary editorial objective: paper-by-paper theoretical comparison
+
+**Master artifact:** [`report/urca_physics_comparison.html`](../report/urca_physics_comparison.html), developed under [`AGENTS.md`](../AGENTS.md). It is self-contained and independent of EOS or calculations. Maintain a matrix of **physical ingredients** plus expandable detailed interpretations, with precise source pages/equations, uncertainties and explicit distinctions between papers. Review **FM79 and Bottaro first**; then Shternin, Alford and Voskresensky, one approach at a time. Avoid treating provisional cells as fully audited. Confirm the exact original FM79 Table 1/page attribution for beta=0.68 before marking that citation verified; the current HTML flags it as pending.
+
+**Keep separate:** numerical EOS-dependent analyses, screening scans, source-code details and validation belong in the computational track below. The HTML reference is not a report of our calculations.
+
+
 ## High priority — reproducibility and microscopic validity
 
 1. **Implement full finite-T Alford charged-current response.** Replace the degenerate DU kernel inside the Breit–Wigner mass integral; validate DU limit, neutrino/antineutrino detailed balance and behavior across both DU thresholds.
@@ -11,7 +18,7 @@
 
 Read [PION_SOFTENING.md](PION_SOFTENING.md) before introducing any new 'enhancement factor'. Keep the DD2 baseline scripts, outputs, and original approximate prescriptions unchanged initially.
 
-1. **Documentation / physics bookkeeping (completed in this commit):** identify OPE screening-mass substitutions versus the collective pion gap; distinguish neutral/charged modes, pion/weak vertex corrections, additional weak diagrams, and potential overlap with rho, Landau terms, SRC beta, Shternin propagators and NWA widths.
+1. **Documentation / physics bookkeeping (completed in the 26 November theory note):** identify OPE screening-mass substitutions versus the collective pion gap; distinguish neutral/charged modes, pion/weak vertex corrections, additional weak diagrams, and potential overlap with rho, Landau terms, SRC beta, Shternin propagators and NWA widths.
 2. **Controlled Bottaro scan (initial implementation added 26 November 2026):** reproduce the historical pion mass limit; vary a fixed-coupling screening denominator in triangular and nontriangular amplitudes, preserving the original rho, Landau and SRC terms. Initial branch recovery and a 2^12 vs 2^14 single-density Sobol convergence check pass; expand multi-density/multi-seed validation before publication. See [PION_SCREENING_SCAN.md](PION_SCREENING_SCAN.md).
 3. **Collective propagator extension (not yet implemented):** parametrized D_pi(omega,q;n) and damping with documented neutral/charged modes, stability conditions and explicit vertex choices. Do not equate this with the full MMU formalism.
 4. **Consistent MMU diagrams (research):** include Voskresensky's intermediate-state weak-emission mechanisms in addition to softened pion exchange. Establish diagrammatic overlap before combining any correction factors.

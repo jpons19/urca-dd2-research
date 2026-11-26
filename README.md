@@ -1,20 +1,33 @@
-# Urca emissivities with CompOSE PT(GRDF2-DD2)
+# Urca neutrino emission: theory comparison and computational research
+
+This repository has **two deliberately separate tracks**. The theory track is an EOS-independent, self-contained comparison of the original papers. The computational track is a reproducible PT(GRDF2-DD2) research prototype.
+
+## Start here
+
+1. **Theory:** [`report/urca_physics_comparison.html`](report/urca_physics_comparison.html) — the **master comparison** of physical ingredients in Friman–Maxwell, Bottaro, Shternin, Alford and Voskresensky, with expandable paper-by-paper explanations and bibliographic links. Read this first for scientific interpretation. **It contains no EOS-specific assumptions, numerical results or code-derived claims.**
+2. **Computational research:** [`report/summary.html`](report/summary.html) — self-contained numerical DD2 report; [`docs/METHODS.md`](docs/METHODS.md) and [`docs/VALIDATION.md`](docs/VALIDATION.md) explain implementation and limitations.
+3. **Working procedure for humans and assistants:** [`AGENTS.md`](AGENTS.md) — the editorial/research protocol governing updates to both tracks. [`CONTRIBUTING.md`](CONTRIBUTING.md) provides the short checklist.
+
+## Numerical research prototype
 
 A reproducible **research prototype** comparing five rate prescriptions from four literature-inspired approaches to neutron-star modified Urca / collisional charged-current neutrino emission, using **the same real CompOSE PT(GRDF2-DD2)** cold composition and general-purpose microscopic fields.
 
 **Status:** 26 November 2026 (static screening-mass study implemented; original numerical baseline remains intact). **Temperatures:** \(10^8\) and \(10^9\) K. **Core density:** \(0.16\)–\(0.98\) fm\(^{-3}\). **Particle channels:** electron and muon, treated separately then summed.
 
-**Start with [`report/summary.html`](report/summary.html)** (self-contained HTML with embedded figures and numerical table). The repo is designed for further research, **not yet a production cooling microphysics library**.
+The computational work is designed for further research, **not yet a production cooling microphysics library**. Its assumptions and results must not be presented as statements made by the original authors.
 
-## Current research direction: pion softening and medium-modified Urca
+## Current numerical research direction: pion softening and medium-modified Urca
 
 **New (26 November 2026):** See [the pion-softening research note](docs/PION_SOFTENING.md) and its [HTML companion](report/pion_softening.html). It consolidates our Friman–Maxwell/Bottaro/Shternin/Alford comparison with Voskresensky's dressed-pion and intermediate-state diagrams. **Commit 2 adds a tested fixed-DD2 static screening-mass sensitivity study; this is not full MMU.** The previous T8/T9 CSV outputs and benchmark plots are unchanged.
 
-## Contents
+## Computational files
 
 | Path | Contents |
 |---|---|
-| `report/summary.html` | Standalone illustrated research report, works offline |
+| `report/urca_physics_comparison.html` | **Master, EOS-independent theoretical comparison; expandable source notes** |
+| `AGENTS.md` | Durable editorial and research instructions |
+| `report/summary.html` | Numerical, EOS-specific illustrated research report, works offline |
+| `report/pion_softening.html` | Older DD2-specific numerical companion (not the theory master) |
 | `figures/` | Original calculation figures in PNG and PDF |
 | `calculations/pion_softening/` | New static screening-mass Bottaro triangular/nontriangular experiment (see docs/PION_SCREENING_SCAN.md) |
 | `calculations/compare_compose_four.py` | Five rate prescriptions, setup and optional T9 scan |
@@ -67,27 +80,27 @@ This will overwrite the supplied reduced inputs; rerun the calculations and test
 
 **Do not treat the five curves as comparable uncertainty-band realizations of one systematic many-body calculation.** Their diagrammatic content differs. None of the DU Fermi-momentum triangle gaps crosses zero in the tabulated comparison range; the threshold crossover is not tested here.
 
-## Primary documents
+## Supporting documents
 
 - [`docs/METHODS.md`](docs/METHODS.md) – complete calculation and precise assumptions.
 - [`docs/VALIDATION.md`](docs/VALIDATION.md) – existing checks, quantitative values and what is still unverified.
 - [`docs/ROADMAP.md`](docs/ROADMAP.md) – ordered research tasks and suggested issue list.
 - [`docs/PROVENANCE.md`](docs/PROVENANCE.md) – CompOSE IDs, input-file hashes and extraction.
 - [`docs/PRIOR_AUDIT.md`](docs/PRIOR_AUDIT.md) – spin–isospin audit underlying the nontriangular calculation.
-- [`docs/REFERENCES.md`](docs/REFERENCES.md) – literature and CompOSE catalogue links.
+- [`docs/REFERENCES.md`](docs/REFERENCES.md) – original publications and their links.
+- [`report/urca_physics_comparison.html`](report/urca_physics_comparison.html) – **authoritative comparative theory matrix**; contributions are incorporated approach by approach.
 - [`docs/PION_SOFTENING.md`](docs/PION_SOFTENING.md) – screening-mass vs collective-mode physics, Voskresensky MMU, overlap cautions and numerical work plan.
 - [`docs/PION_SCREENING_SCAN.md`](docs/PION_SCREENING_SCAN.md) – implemented fixed-background Bottaro toy scan, reproduction commands, outputs and numerical checks.
 
 ## GitHub usage
 
+The repository already exists at [jpons19/urca-dd2-research](https://github.com/jpons19/urca-dd2-research). **Do not reinitialize it or add another origin remote.** On an existing local checkout:
+
 ```bash
-git init
-git add README.md .gitignore .gitattributes requirements.txt report figures calculations docs tests tools
-git commit -m "Initialize CompOSE DD2 Urca comparison prototype"
-# Create an empty GitHub repository first, then:
-git branch -M main
-git remote add origin https://github.com/YOUR-ACCOUNT/YOUR-REPO.git
-git push -u origin main
+git status --short
+git pull --ff-only origin main
 ```
 
-The included GitHub Actions workflow runs quick baseline tests on each push/pull request; use `make all` for full local regeneration. The repository is currently public; decide on a project license and reuse policy before wider distribution. Research papers and original CompOSE distributions have their own citation and reuse requirements. The `.gitignore` prevents accidentally adding the large original EOS ZIPs.
+For a new checkout: `git clone git@github.com:jpons19/urca-dd2-research.git`. Review uncommitted changes before pulling, changing files, or pushing. Follow [AGENTS.md](AGENTS.md) and use small, scoped commits.
+
+GitHub Actions runs regression tests on pushes/pull requests; use `make all` for full numerical regeneration. The repository is public; no license has yet been selected. Do not redistribute published PDFs or original CompOSE archives without verifying their reuse permissions.

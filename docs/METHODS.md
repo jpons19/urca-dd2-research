@@ -58,6 +58,8 @@ The conventional neutron-branch models have `Q∝T⁸` when composition/fields a
 - `calculations/run_dd2_T8_reference.py`: low-T T² extrapolation, T8 solution, T8 rates, scaling check and five reference plots.
 - `calculations/test_*.py`: numerical regression checks on generated outputs.
 
-## Proposed pion softening / MMU extension (documentation only)
+## Pion screening sensitivity and theoretical context
 
-See [PION_SOFTENING.md](PION_SOFTENING.md) for a source-grounded differentiation between a constant screening-mass change in OPE, dressed neutral/charged pion modes, Landau–Migdal vertex corrections, intermediate-state weak radiation, and overlap with Shternin's near-on-shell propagators or Alford's phenomenological collision widths. **No pion-softening rate is implemented or validated on main in this update.** Our FM/Bottaro/Shternin/Alford baseline calculations and T8/T9 outputs are unchanged.
+The **fixed-background static screening-mass** Bottaro triangular/nontriangular experiment is implemented separately in `calculations/pion_softening/`; see [PION_SCREENING_SCAN.md](PION_SCREENING_SCAN.md) for scope, reproduction, and initial tests. It is not a full collective medium-modified Urca (MMU) calculation. Original FM/Bottaro/Shternin/Alford baseline calculations and output files remain unchanged.
+
+The theoretical distinction between static screening, dressed neutral/charged modes, Landau–Migdal correlations and intermediate-state radiation is discussed in [PION_SOFTENING.md](PION_SOFTENING.md). For an **EOS-independent comparison of the original theories**, use [report/urca_physics_comparison.html](../report/urca_physics_comparison.html); implementation assumptions belong here, not in that HTML.
