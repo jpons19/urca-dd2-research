@@ -163,6 +163,47 @@ class Sedrakian(unittest.TestCase):
         self.assertLess(abs(base_val / fine - 1), 2e-4)
 
 
+class MMU(unittest.TestCase):
+    """Voskresensky MMU first-approximation parametrization, calculations/multi_eos/mmu.py."""
+
+    @classmethod
+    def setUpClass(cls):
+        from calculations.multi_eos import mmu as M
+        cls.M, cls.dd2 = M, E.load_dd2()
+
+    def test_inputs(self):
+        M = self.M
+        self.assertAlmostEqual(M.gamma(1.0), 1 / 2.6, places=12)
+        self.assertEqual(M.gap2(0.5), 1.0)
+        self.assertAlmostEqual(M.gap2(3.0), 0.27, places=6)
+        self.assertAlmostEqual(M.gap2(5.0), 0.27, places=6)                    # saturation (curve 1b)
+        self.assertAlmostEqual(M.gap2(2.0, nc=2.0), 0.216, places=6)
+        g = [M.gap2(x) for x in np.linspace(0.8, 3.0, 23)]
+        self.assertTrue(np.all(np.diff(g) <= 1e-12))                           # monotone softening
+
+    def test_ratio_form_by_hand(self):
+        d = self.dd2.state(0.32)
+        x = 2.0
+        expected = sum(R.base.fm(d)) * 3 * x**(10 / 3) * ((1 + 1.6) / (1 + 1.6 * x**(1 / 3)))**6 / 0.734**4
+        self.assertAlmostEqual(self.M.mmu_ratio_form(d) / expected, 1.0, delta=2e-3)
+
+    def test_low_density_reduces_to_mu(self):
+        d = self.dd2.state(0.12)
+        self.assertEqual(self.M.mmu_ratio_form(d), sum(R.base.fm(d)))
+        self.assertTrue(np.isnan(self.M.mmu_ratio_form(d, unsoftened=True)))
+        self.assertTrue(np.isnan(self.M.mmu_direct_form(d)))
+
+    def test_forms_agree_to_order_one(self):
+        for n in (0.16, 0.32, 0.48):
+            d = self.dd2.state(n)
+            r = self.M.mmu_direct_form(d) / self.M.mmu_ratio_form(d)
+            self.assertTrue(0.3 < r < 3.0, (n, r))
+
+    def test_unsoftened_gap_suppresses_pion_term(self):
+        d = self.dd2.state(0.16)
+        self.assertLess(self.M.mmu_ratio_form(d, unsoftened=True), 1e-2 * sum(R.base.fm(d)))
+
+
 @unittest.skipUnless((EXT / 'BCP_NLRMF_N' / 'eos.thermo.ns').exists(), 'CompOSE BCP table not downloaded')
 class TOV(unittest.TestCase):
     def test_bcp_maximum_mass_matches_compose(self):

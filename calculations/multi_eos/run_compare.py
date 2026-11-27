@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 from . import eos_inputs as E
 from . import rates as R
 from . import tov
+from . import mmu as M
 import json
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -32,6 +33,9 @@ STYLE = {'FM': ('Friman–Maxwell / NSCool', '--', 'C0'),
          'Shternin': ('Shternin 0.6R_A+0.2R_B', '-', 'C3'),
          'NWA': ('Alford NWA (adapted)', '-', 'C4'),
          'Sedrakian': ('Sedrakian proton width', '-', 'C5'),
+         'MMU': ('Voskresensky MMU (ratio form, $n_c^\\pi$=3$n_0$)', '-', 'C6'),
+         'MMU_direct': ('MMU direct form (SVSWW97 Eq. 1)', ':', 'C6'),
+         'MMU_unsoftened': ('MMU pion-mediated term, vacuum-like gap (ours)', '-.', 'C7'),
          'DU': ('Direct Urca (sharp)', ':', 'k')}
 TOV_INPUT = {'DD2': ('DD2_cold', 'eos.thermo', 'eos.nb'), 'BCP': ('BCP_NLRMF_N', 'eos.thermo.ns', 'eos.nb.ns'),
              'BSk22': ('BSk22', 'eos.thermo', 'eos.nb')}
@@ -80,6 +84,8 @@ def scan(name, npoints):
         for model, (qe, qm) in R.all_rates(d).items():
             r[f'{model}_e'], r[f'{model}_mu'] = qe, qm
             r[f'{model}_total'] = qe + qm
+        for model, q in M.all_mmu(d).items():          # totals only (e + mu)
+            r[f'{model}_total'] = q
         rows.append(r)
     OUT.mkdir(parents=True, exist_ok=True)
     with open(OUT / f'{name}_urca_T9.csv', 'w', newline='') as f:
@@ -89,7 +95,7 @@ def scan(name, npoints):
 
 def plot(results):
     names = list(results)
-    fig, axes = plt.subplots(2, len(names), figsize=(5.2 * len(names), 8.6), sharex='col',
+    fig, axes = plt.subplots(2, len(names), figsize=(5.2 * len(names), 10.2), sharex='col',
                              gridspec_kw={'height_ratios': [2.2, 1], 'hspace': .06, 'wspace': .22})
     axes = np.atleast_2d(axes).reshape(2, len(names))
     for j, name in enumerate(names):
@@ -104,6 +110,10 @@ def plot(results):
             ax.semilogy(x, yp, ls=ls, color=c, lw=2, label=label)
             if model != 'FM':
                 ar.semilogy(x, yp / ref, ls=ls, color=c, lw=1.8)
+            if model == 'MMU':
+                y2 = np.array([r['MMU_nc2_total'] for r in rows], dtype=float)
+                ax.fill_between(x, yp, y2, color=c, alpha=.15, lw=0, label=r'MMU: $n_c^\pi$ 3$n_0$ → 2$n_0$')
+                ar.fill_between(x, yp / ref, y2 / ref, color=c, alpha=.15, lw=0)
             if model in ('Bottaro', 'Bottaro_nontri'):
                 y1 = np.array([r[f'{model}_noSRC_total'] for r in rows], dtype=float)
                 ax.fill_between(x, yp, y1, color=c, alpha=.18, lw=0,
@@ -124,7 +134,7 @@ def plot(results):
             for a in (ax, ar):
                 a.axvspan(st['nc_Mmax'], x[-1], color='0.85', alpha=.5, lw=0)
         ax.set_title(LABELS[name] + '\n' + rf"$M_{{\max}}$={st['Mmax']:.2f} $M_\odot$", fontsize=11)
-        ax.set_ylim(1e19, 1e28); ar.set_ylim(1e-2, 1e8)
+        ax.set_ylim(1e17, 1e28); ar.set_ylim(1e-4, 1e8)
         ar.axhline(1, color='0.3', lw=.8, ls=':')
         ar.set_xlabel(r'$n_B$ (fm$^{-3}$)')
         for a in (ax, ar):
@@ -132,11 +142,18 @@ def plot(results):
         if j == 0:
             ax.set_ylabel(r'$Q_\nu$ at $T=10^9$ K (erg cm$^{-3}$ s$^{-1}$)')
             ar.set_ylabel('ratio to FM')
-            ax.legend(fontsize=8, loc='upper left')
+            pass
     fig.text(.06, .008, 'Neutron-branch MU only (FM, Bottaro, Shternin); e + μ channels summed. Dashed grey: electron DU threshold; '
-             'dotted grey: muon DU threshold.\nShternin undefined at/above threshold; adapted NWA needs a Dirac mass (RMF only); Sedrakian: nonrelativistic proton spectral width, μ channel added by us.\n'
+             'dotted grey: muon DU threshold.\nShternin undefined at/above threshold; adapted NWA needs a Dirac mass (RMF only); Sedrakian: nonrelativistic proton spectral width, μ channel added by us. MMU: published pion-gap/vertex fits (n0=0.16), not EOS-consistent.\n'
              'Shaded: Bottaro without the inherited β=0.68 (possible overlap with ρ exchange). Differences between prescriptions are not an error band. Brown lines: central densities from TOV; grey: beyond $M_{\\max}$.', fontsize=8.5, color='.3')
-    fig.subplots_adjust(left=.07, right=.985, top=.94, bottom=.145)
+    seen = {}
+    for a in axes[0]:
+        for h, l in zip(*a.get_legend_handles_labels()):
+            seen.setdefault(l, h)
+    handles, labels = list(seen.values()), list(seen)
+    fig.legend(handles, labels, loc='lower center', ncol=4, fontsize=8.5, frameon=False,
+               bbox_to_anchor=(0.5, 0.085))
+    fig.subplots_adjust(left=.07, right=.985, top=.94, bottom=.25)
     for ext in ('png', 'pdf'):
         fig.savefig(OUT / f'urca_multi_eos_T9.{ext}', dpi=170)
     plt.close(fig)

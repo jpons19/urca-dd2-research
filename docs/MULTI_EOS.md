@@ -60,6 +60,20 @@ Implemented in `calculations/multi_eos/sedrakian.py` from PRL 133, 171401 (arXiv
 
 **Result.** Far below threshold the Sedrakian rate is ≈ 4–8 × FM (DD2 7.2 at 0.16 fm⁻³, 4.3 at n<sub>c</sub>(1.4 M☉); BCP ≈ 7; BSk22 ≈ 6), i.e. above Bottaro and FM, comparable to Shternin, and 2–4 times below the adapted Alford NWA. On BCP and BSk22 it closely tracks Shternin's curve below threshold, including the near-threshold rise, and then joins the DU rate continuously. This numerical similarity of two physically different mechanisms (off-shell proton strength vs. near-on-shell intermediate nucleon) is a coincidence of magnitude for these parameters, not a demonstrated equivalence; both depend on interaction inputs (cross sections vs. BHF G-matrix) chosen independently.
 
+## Voskresensky medium-modified Urca (first approximation, for reference)
+
+Implemented in `calculations/multi_eos/mmu.py` with the parametrization approved on 27 November 2026. **The pion gap and vertex factors are published model fits in n/n₀ (n₀ = 0.16 fm⁻³ for all EOSs), not EOS quantities**; only composition, Fermi momenta and Landau masses come from each EOS.
+
+* Vertex factor Γ(n) = 1/[1 + C(n/n₀)^{1/3}], C = 1.6 (BGV04 text near Eq. 5: C ≃ 1.4–1.6; BGV13 Eq. 3; KV15).
+* Pion gap ω̃²/m<sub>π</sub>²: BGV04 Fig. 1 curve 1a, **digitized** from the vector figure in the arXiv source (no formula is published): 1.0 at 0.8n₀, 0.996 at n₀, 0.734 at 2n₀, 0.27 at 3n₀; saturated above the critical density (curve 1b). Baseline n<sub>c</sub><sup>π</sup> = 3n₀; variant n<sub>c</sub><sup>π</sup> = 2n₀ with plateau 0.216 (Grigorian–Voskresensky–Blaschke 2016 family), built by us by compressing the 1a shape in density. Same gap for π⁰ and π±, α = 1 (no condensate), as in the cooling papers.
+* **Ratio form** (main curve; BGV13 Eq. 3, KV15): ε<sub>MMU</sub> = ε<sub>FM</sub> · 3(n/n₀)^{10/3}[Γ(n)/Γ(n₀)]⁶/(ω̃/m<sub>π</sub>)⁸ for n ≥ 0.8n₀, plain FM below (the prescription jumps by ≈1.9 at 0.8n₀ by construction).
+* **Direct form** (cross-check; SVSWW97 Eq. 1, built on VS86): 2.4×10²⁴ F₁ (n/n₀)^{10/3}(m<sub>n</sub>*/m<sub>N</sub>)³(m<sub>p</sub>*/m<sub>N</sub>)[m<sub>π</sub>/ω̃]⁸Γ⁸T₉⁸ with F₁ = 1 + (3/4Γ²)(n/n₀)^{2/3} and that paper's C = 1.4. It agrees with the ratio form to 20–40 % — the known Γ⁶ vs Γ⁸ / prefactor inconsistency is of order one.
+* **Vacuum-like gap (our extension, Q1):** ratio form with ω̃² = m<sub>π</sub>² + p<sub>Fn</sub>² and Γ kept. This is a scaling probe of the pion-mediated term, not a published result; the formulas were derived for the soft-mode regime.
+
+Results at T = 10⁹ K (ratio to FM of the same EOS): ≈3 at n₀ for every EOS (fixed by the prescription); at n<sub>c</sub>(1.4 M☉) ≈ 90 (DD2), 70 (BCP), 220 (BSk22) for n<sub>c</sub><sup>π</sup> = 3n₀, and ≈ 7×10³ (DD2) with n<sub>c</sub><sup>π</sup> = 2n₀; ≈5×10³ at 3n₀ for all. MMU stays below the sharp DU rate by 2–3 orders of magnitude where DU is open. With a vacuum-like gap the pion-mediated term is only ≈2×10⁻³ of FM: within this parametrization the whole enhancement comes from the assumed softening (ω̃²(n₀) ≈ m<sub>π</sub>² already implies a strong reduction relative to the vacuum m<sub>π</sub>² + p<sub>Fn</sub>² ≈ 7m<sub>π</sub>²). This is consistent with the scaling inference recorded under Q1 and does **not** settle Q1, which concerns realistic unsoftened two-body currents rather than this formula's limit.
+
+Sources (arXiv LaTeX checked): BGV04 astro-ph/0403170; SVSWW97 astro-ph/9605188 (Eqs. 1–2); BGV13 arXiv:1308.4093 (Eq. 3); KV15 arXiv:1412.0314; GVB16 arXiv:1603.02634; GVM18 arXiv:1808.01819; V23 arXiv:2207.03212.
+
 ## Inherited short-range factor in Bottaro (β<sub>n</sub> = 0.68)
 
 Both Bottaro curves keep the historical β<sub>n</sub> = 0.68, as in the paper. This factor is FM79's R<sub>Urca</sub> (Table 1, p. 552): correlated/uncorrelated **OPE-only** emissivity for a 0.7 fm cutoff. FM79's own bremsstrahlung results (Table 1 and Eqs. 90–91) show that once ρ exchange is included, correlations add only a factor ≈0.85 (0.39/0.46), not the OPE-only 0.56. Applying 0.68 on top of explicit ρ exchange therefore probably over-suppresses; Landau–Migdal g′ may also absorb part of the same physics. The figure shades the range between β<sub>n</sub> = 0.68 and β<sub>n</sub> = 1 (columns `Bottaro*_noSRC_*`, a factor 1/0.68 ≈ 1.47). This is a sensitivity range, not a recomputed Urca correlation factor; FM is kept with its own β<sub>n</sub>, for which the factor was defined.
@@ -89,4 +103,5 @@ python -m unittest tests.test_multi_eos -v
 
 * Proton-branch MU (Yakovlev et al. 2001 rescaling) for FM/Bottaro/Shternin, now relevant because BSk22 reaches Y<sub>p</sub> > 0.3.
 * Superfluid reduction factors; finite-temperature (non-degenerate) DU kernel near threshold.
+* Voskresensky MMU with separate π⁰/π± gaps (μ<sub>π</sub> = μ<sub>e</sub>), condensate branch, and EOS-consistent pion polarization (see the chiral-EFT / in-medium pion subproject).
 * A third RMF with intermediate L, or a microscopic (BHF/APR-type) EOS, for a Shternin-consistent comparison.
