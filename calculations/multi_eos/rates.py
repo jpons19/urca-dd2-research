@@ -25,7 +25,15 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'calculations'))
 import compare_compose_four as base  # noqa: E402
 
-MODELS = ['FM', 'Bottaro', 'Bottaro_nontri', 'Shternin', 'NWA', 'DU']
+MODELS = ['FM', 'Bottaro', 'Bottaro_nontri', 'Bottaro_noSRC', 'Bottaro_nontri_noSRC',
+          'Shternin', 'NWA', 'DU']
+
+# The historical short-range factor beta_n = 0.68 (FM79 Table 1, R_Urca at d = 0.7 fm) was
+# defined for the OPE potential alone.  Bottaro et al. keep it on top of explicit rho
+# exchange; FM79's own nn-bremsstrahlung results (Eqs. 90-91) show correlation and rho
+# suppressions largely overlap.  The *_noSRC variants (beta = 1) bracket this ambiguity;
+# they are a sensitivity range, not a recomputed correlation factor.
+
 
 
 def du(d):
@@ -47,10 +55,13 @@ def nwa(d, epsrel=5e-4):
 
 def all_rates(d):
     """Return {model: (electron, muon)} for one standardized state."""
+    b, bnt = base.bottaro(d), base.bottaro_nontriangular(d)
     return {
         'FM': base.fm(d),
-        'Bottaro': base.bottaro(d),
-        'Bottaro_nontri': base.bottaro_nontriangular(d),
+        'Bottaro': b,
+        'Bottaro_nontri': bnt,
+        'Bottaro_noSRC': tuple(q / base.BETA for q in b),
+        'Bottaro_nontri_noSRC': tuple(q / base.BETA for q in bnt),
         'Shternin': base.shternin(d),
         'NWA': nwa(d),
         'DU': du(d),

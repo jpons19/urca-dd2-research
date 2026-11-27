@@ -103,6 +103,11 @@ def plot(results):
             ax.semilogy(x, yp, ls=ls, color=c, lw=2, label=label)
             if model != 'FM':
                 ar.semilogy(x, yp / ref, ls=ls, color=c, lw=1.8)
+            if model in ('Bottaro', 'Bottaro_nontri'):
+                y1 = np.array([r[f'{model}_noSRC_total'] for r in rows], dtype=float)
+                ax.fill_between(x, yp, y1, color=c, alpha=.18, lw=0,
+                                label=r'$\beta_n$: 0.68 → 1' if model == 'Bottaro' else None)
+                ar.fill_between(x, yp / ref, y1 / ref, color=c, alpha=.18, lw=0)
         for xe in thresholds(rows, 'gap_e'):
             for a in (ax, ar):
                 a.axvline(xe, color='0.35', lw=1, ls=(0, (4, 3)))
@@ -127,10 +132,10 @@ def plot(results):
             ax.set_ylabel(r'$Q_\nu$ at $T=10^9$ K (erg cm$^{-3}$ s$^{-1}$)')
             ar.set_ylabel('ratio to FM')
             ax.legend(fontsize=8, loc='upper left')
-    fig.text(.06, .012, 'Neutron-branch MU only (FM, Bottaro, Shternin); e + μ channels summed. Dashed grey: electron DU threshold; '
-             'dotted grey: muon DU threshold.\nShternin undefined at/above threshold; adapted NWA needs a Dirac mass (RMF only). '
-             'Differences between prescriptions are not an error band. Brown lines: central densities from TOV; grey: beyond $M_{\\max}$.', fontsize=8.5, color='.3')
-    fig.subplots_adjust(left=.07, right=.985, top=.94, bottom=.13)
+    fig.text(.06, .008, 'Neutron-branch MU only (FM, Bottaro, Shternin); e + μ channels summed. Dashed grey: electron DU threshold; '
+             'dotted grey: muon DU threshold.\nShternin undefined at/above threshold; adapted NWA needs a Dirac mass (RMF only).\n'
+             'Shaded: Bottaro without the inherited β=0.68 (possible overlap with ρ exchange). Differences between prescriptions are not an error band. Brown lines: central densities from TOV; grey: beyond $M_{\\max}$.', fontsize=8.5, color='.3')
+    fig.subplots_adjust(left=.07, right=.985, top=.94, bottom=.145)
     for ext in ('png', 'pdf'):
         fig.savefig(OUT / f'urca_multi_eos_T9.{ext}', dpi=170)
     plt.close(fig)

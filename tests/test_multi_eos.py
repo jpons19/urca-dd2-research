@@ -103,6 +103,12 @@ class Rates(unittest.TestCase):
         self.assertGreater(rb['DU'][0], 0)
         self.assertGreater(rb['DU'][1], 0)
 
+    def test_bottaro_beta_variants(self):
+        r = R.all_rates(E.load_dd2().state(0.3))
+        for m in ('Bottaro', 'Bottaro_nontri'):
+            for i in (0, 1):
+                self.assertAlmostEqual(r[m + '_noSRC'][i] * 0.68, r[m][i], delta=1e-9 * r[m][i] + 1e-300)
+
     def test_nwa_below_threshold_is_continuous_and_below_du(self):
         bcp = E.load_bcp()
         vals = [sum(R.all_rates(bcp.state(n))['NWA']) for n in np.linspace(0.40, 0.50, 6)]

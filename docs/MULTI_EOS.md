@@ -47,6 +47,10 @@ Observations (numerical, prescription-dependent):
 * **BSk22 Landau masses fall to ~0.15 m** at the highest densities, which makes all MU formulas decrease with density there; this is a property of the Skyrme functional, not of the Urca prescriptions.
 * **The adapted NWA lies ~15–30× above FM far below threshold** for both RMFs. This is the known behavior of our adapted (degenerate-kernel) NWA and is not a validated microscopic MU rate; see `docs/METHODS.md` and the theory HTML (Alford section) for why width-only bare-vertex responses need not reproduce the MU amplitude.
 
+## Inherited short-range factor in Bottaro (β<sub>n</sub> = 0.68)
+
+Both Bottaro curves keep the historical β<sub>n</sub> = 0.68, as in the paper. This factor is FM79's R<sub>Urca</sub> (Table 1, p. 552): correlated/uncorrelated **OPE-only** emissivity for a 0.7 fm cutoff. FM79's own bremsstrahlung results (Table 1 and Eqs. 90–91) show that once ρ exchange is included, correlations add only a factor ≈0.85 (0.39/0.46), not the OPE-only 0.56. Applying 0.68 on top of explicit ρ exchange therefore probably over-suppresses; Landau–Migdal g′ may also absorb part of the same physics. The figure shades the range between β<sub>n</sub> = 0.68 and β<sub>n</sub> = 1 (columns `Bottaro*_noSRC_*`, a factor 1/0.68 ≈ 1.47). This is a sensitivity range, not a recomputed Urca correlation factor; FM is kept with its own β<sub>n</sub>, for which the factor was defined.
+
 ## Known input issues
 
 * **BSk22 proton dispersion:** in the CompOSE table, m<sub>p</sub> + p<sub>Fp</sub>²/2m*<sub>p</sub> + U<sub>p</sub> differs from μ<sub>p</sub> by up to ~35 MeV in parts of the core, while the neutron relation holds to 10⁻⁴ MeV. The rates use only Fermi momenta and m*<sub>p</sub>, not U<sub>p</sub> or μ<sub>p</sub>; the discrepancy is documented by a test and should be raised with the table providers before m*<sub>p</sub> is trusted at the 10% level.
