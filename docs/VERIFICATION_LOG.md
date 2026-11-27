@@ -52,3 +52,10 @@ Yakovlev, Kaminker, Gnedin & Haensel (2001), arXiv:astro-ph/0012122, Sec. 3.4 (a
 - Eq. (139): α_n attributed to the OPE matrix element without interference (21/4 vs 8).
 - Proton branch (Eqs. 141–142, from Yakovlev & Levenfish 1995, corrected) and muon branches are the review's additions.
 - Reconciled by re-evaluating FM79 (our arithmetic): Eq. (56) with Eqs. (20)–(22) gives 1.765−0.623(ρ0/ρ)^{2/3}, reproducing Eq. (62), so Landau terms are included in α_n=1.13; the coherent exchange result (Eq. 75, 21/16 of one direct square) is 21/32 of the practical two-square result (Eq. 39), matching the review's Eq. (139).
+
+Voskresenskiĭ & Senatorov (1986), Sov. Phys. JETP 63, 885, checked from a scanned copy supplied by the project owner (not stored in the repository):
+
+- Interaction Eqs. (2.1)–(2.11); propagator G=±(ω+Δμ)^{-1}, Eq. (2.17), p. 888; Fig. 3 diagrams a–c, h, i, p. 889.
+- Eqs. (4.3)–(4.5), p. 891: vector-current term ∝ 1−β+κ, absent with vacuum pion propagator; footnote 3, p. 896: β≠1 even for Π→0 because of μ_π.
+- Exchange added coherently, Eqs. (4.6)–(4.9), p. 892; results Eqs. (4.10)–(4.11) and comparison with FM79, p. 892.
+- Added to the master HTML bibliography as ref. [11] and to the Voskresensky section; further-reading entries renumbered [12]–[17].
