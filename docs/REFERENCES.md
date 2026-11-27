@@ -18,7 +18,7 @@ For theoretical differences among original papers, the master self-contained com
 
 ## Further reading (bibliography survey, 27 November 2026; not yet audited)
 
-Metadata checked against OpenAlex. Listed in the master HTML bibliography as refs. [12]–[17]; their content has not been audited against the comparison matrix.
+Metadata checked against OpenAlex. Listed in the master HTML bibliography as refs. [12]–[18]; their content has not been audited against the comparison matrix.
 
 13. D. G. Yakovlev, A. D. Kaminker, O. Y. Gnedin and P. Haensel, “Neutrino emission from neutron stars,” *Phys. Rep.* **354** (2001), 1; [doi:10.1016/S0370-1573(00)00131-9](https://doi.org/10.1016/S0370-1573(00)00131-9). Standard modified-Urca formulas and α_n, β_n factors.
 14. A. Schmitt and P. S. Shternin, “Reaction rates and transport in neutron stars,” Astrophys. Space Sci. Libr. (Springer, 2018); [doi:10.1007/978-3-319-97616-7_9](https://doi.org/10.1007/978-3-319-97616-7_9).
@@ -26,5 +26,6 @@ Metadata checked against OpenAlex. Listed in the master HTML bibliography as ref
 16. D. Blaschke, H. Grigorian and D. N. Voskresensky, “Cooling of neutron stars. Hadronic model,” *Astron. Astrophys.* (2004); [doi:10.1051/0004-6361:20040404](https://doi.org/10.1051/0004-6361:20040404).
 17. J. Menéndez, D. Gazit and A. Schwenk, “Chiral two-body currents in nuclei: Gamow–Teller transitions and neutrinoless double-beta decay,” *Phys. Rev. Lett.* **107** (2011), 062501; [doi:10.1103/PhysRevLett.107.062501](https://doi.org/10.1103/PhysRevLett.107.062501). Relevant to Q1.
 18. P. Gysbers et al., “Discrepancy between experimental and theoretical β-decay rates resolved from first principles,” *Nature Phys.* **15** (2019), 428; [doi:10.1038/s41567-019-0450-7](https://doi.org/10.1038/s41567-019-0450-7). Relevant to Q1.
+19. B. Fore and S. Reddy, “Pions in hot dense matter and their astrophysical implications,” *Phys. Rev. C* **101** (2020), 035809; [doi:10.1103/PhysRevC.101.035809](https://doi.org/10.1103/PhysRevC.101.035809); [arXiv:1911.02632](https://arxiv.org/abs/1911.02632). Hot-matter virial pions; in-medium pion subproject (master HTML ref. [18]).
 
 See [PION_SOFTENING.md](PION_SOFTENING.md) for the pion-medium study and [THEORY_OPEN_QUESTIONS.md](THEORY_OPEN_QUESTIONS.md) for the EOS-independent open-issue register. The links provide scientific provenance. No original article PDFs are redistributed in this repository.
