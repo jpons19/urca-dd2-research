@@ -27,3 +27,28 @@ python prior_audit/murca_angular_factor_test.py
 T9 and T8 plot/data reruns completed in ~8 and ~9 seconds respectively on the verification environment; timings are environment-dependent, and the production quality of the physics models is not implied by these quick runs.
 
 Additional tests: four unittest cases pass (input axes; chemical/kinematic constraints; lepton sums; actual recalculation of all four rates at three benchmark densities). The `prior_audit` test confirms the known `g′` cancellation and the printed Eq. (3.31) diagnostic, but does not verify a published code implementation.
+
+# Primary-source verification — 27 November 2026
+
+FM79 (ApJ 232, 541) checked page by page against the NASA ADS scan (not stored in the repository):
+
+- beta_n≈0.68 = R_Urca, Table 1, printed p. 552, cutoff d=0.7 fm (R_Urca = 0.78, 0.68, 0.58 for d = 0.55, 0.7, 0.85 fm); correlated potential Eqs. (12)–(14), pp. 543–544; applied in Eq. (65c).
+- Intermediate nucleon propagator: Eqs. (28a)–(28b), p. 547; lowest order in 1/m gives ±1/ω.
+- rho exchange: Sec. VII, Eqs. (83)–(91), pp. 554–555, nnνν̄ only (C_ρ≈1.25).
+- Exchange terms: Sec. VI; Urca ratio 21/16 (Eq. 75), not included in Eqs. (65)–(66).
+- Branches: neutron branch only (process 1), electrons only; superfluidity discussed qualitatively (Sec. VIII).
+- Recorded in report/urca_physics_comparison.html (FM79 section, matrix, Section 5).
+
+Voskresensky (2001), arXiv:astro-ph/0101514, checked against the arXiv PDF text and the rendered printed p. 17 (not stored in the repository):
+
+- Fig. 1, printed p. 4: emission from a nucleon leg versus from intermediate states.
+- Eq. (24), p. 17: first diagram has the lepton pair emitted at a π⁺–π⁰ junction (charged-pion β-decay to π⁰), second a correlated neutron-hole loop between the pion lines, third the FOPE-like external-leg diagram.
+- Eq. (25), p. 17: ε ∝ T9^8 (ρ/ρ0)^{10/3} with inverse fourth powers of the neutral and charged pion gaps, Γ^8 (Eq. 26), F1 (Eq. 27), pairing factors ζ (Eq. 28, p. 18); Eq. (29) MMU/FOPE ratio ∼10 at ρ0.
+- Recorded in report/urca_physics_comparison.html (Voskresensky section, matrix, Section 5) and docs/THEORY_OPEN_QUESTIONS.md (Q1).
+
+Yakovlev, Kaminker, Gnedin & Haensel (2001), arXiv:astro-ph/0012122, Sec. 3.4 (arXiv pp. 67–71), checked against the arXiv PDF text (not stored in the repository):
+
+- Eq. (140): Q^(Mn) ≈ 8.1e21 (m_n*/m_n)^3 (m_p*/m_p) (n_p/n_0)^{1/3} T9^8 α_n β_n, stated as FM79's result with α_n=1.13 (FM79 Eq. 63a) and β_n=0.68.
+- Eq. (139): α_n attributed to the OPE matrix element without interference (21/4 vs 8).
+- Proton branch (Eqs. 141–142, from Yakovlev & Levenfish 1995, corrected) and muon branches are the review's additions.
+- Reconciled by re-evaluating FM79 (our arithmetic): Eq. (56) with Eqs. (20)–(22) gives 1.765−0.623(ρ0/ρ)^{2/3}, reproducing Eq. (62), so Landau terms are included in α_n=1.13; the coherent exchange result (Eq. 75, 21/16 of one direct square) is 21/32 of the practical two-square result (Eq. 39), matching the review's Eq. (139).
