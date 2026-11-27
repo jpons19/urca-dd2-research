@@ -31,6 +31,7 @@ STYLE = {'FM': ('Friman–Maxwell / NSCool', '--', 'C0'),
          'Bottaro_nontri': ('Bottaro nontriangular', '-.', 'C2'),
          'Shternin': ('Shternin 0.6R_A+0.2R_B', '-', 'C3'),
          'NWA': ('Alford NWA (adapted)', '-', 'C4'),
+         'Sedrakian': ('Sedrakian proton width', '-', 'C5'),
          'DU': ('Direct Urca (sharp)', ':', 'k')}
 TOV_INPUT = {'DD2': ('DD2_cold', 'eos.thermo', 'eos.nb'), 'BCP': ('BCP_NLRMF_N', 'eos.thermo.ns', 'eos.nb.ns'),
              'BSk22': ('BSk22', 'eos.thermo', 'eos.nb')}
@@ -133,7 +134,7 @@ def plot(results):
             ar.set_ylabel('ratio to FM')
             ax.legend(fontsize=8, loc='upper left')
     fig.text(.06, .008, 'Neutron-branch MU only (FM, Bottaro, Shternin); e + μ channels summed. Dashed grey: electron DU threshold; '
-             'dotted grey: muon DU threshold.\nShternin undefined at/above threshold; adapted NWA needs a Dirac mass (RMF only).\n'
+             'dotted grey: muon DU threshold.\nShternin undefined at/above threshold; adapted NWA needs a Dirac mass (RMF only); Sedrakian: nonrelativistic proton spectral width, μ channel added by us.\n'
              'Shaded: Bottaro without the inherited β=0.68 (possible overlap with ρ exchange). Differences between prescriptions are not an error band. Brown lines: central densities from TOV; grey: beyond $M_{\\max}$.', fontsize=8.5, color='.3')
     fig.subplots_adjust(left=.07, right=.985, top=.94, bottom=.145)
     for ext in ('png', 'pdf'):

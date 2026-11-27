@@ -26,7 +26,7 @@ sys.path.insert(0, str(ROOT / 'calculations'))
 import compare_compose_four as base  # noqa: E402
 
 MODELS = ['FM', 'Bottaro', 'Bottaro_nontri', 'Bottaro_noSRC', 'Bottaro_nontri_noSRC',
-          'Shternin', 'NWA', 'DU']
+          'Shternin', 'NWA', 'Sedrakian', 'DU']
 
 # The historical short-range factor beta_n = 0.68 (FM79 Table 1, R_Urca at d = 0.7 fm) was
 # defined for the OPE potential alone.  Bottaro et al. keep it on top of explicit rho
@@ -36,10 +36,15 @@ MODELS = ['FM', 'Bottaro', 'Bottaro_nontri', 'Bottaro_noSRC', 'Bottaro_nontri_no
 
 
 
+def du_prefactor(d):
+    """Sharp degenerate DU emissivity for kinematically allowed configurations (erg cm^-3 s^-1)."""
+    return (457 * np.pi / 10080) * base.G**2 * (1 + 3 * base.GA**2) * d['mLn'] * d['mLp'] \
+        * d['mu'] * base.T**6 * base.NATURAL_TO_CGS
+
+
 def du(d):
     """Degenerate DU emissivity with the sharp triangle condition, per lepton."""
-    pref = (457 * np.pi / 10080) * base.G**2 * (1 + 3 * base.GA**2) * d['mLn'] * d['mLp'] \
-        * d['mu'] * base.T**6 * base.NATURAL_TO_CGS
+    pref = du_prefactor(d)
     out = []
     for pl in (d['pe'], d['pm']):
         allowed = pl > 0 and d['pn'] <= d['pp'] + pl and d['pp'] <= d['pn'] + pl
@@ -53,6 +58,11 @@ def nwa(d, epsrel=5e-4):
     return base.alford(d, epsrel)
 
 
+def _sedrakian(d):
+    from .sedrakian import sedrakian   # local import: sedrakian imports this module
+    return sedrakian(d)
+
+
 def all_rates(d):
     """Return {model: (electron, muon)} for one standardized state."""
     b, bnt = base.bottaro(d), base.bottaro_nontriangular(d)
@@ -64,5 +74,6 @@ def all_rates(d):
         'Bottaro_nontri_noSRC': tuple(q / base.BETA for q in bnt),
         'Shternin': base.shternin(d),
         'NWA': nwa(d),
+        'Sedrakian': _sedrakian(d),
         'DU': du(d),
     }

@@ -117,6 +117,52 @@ class Rates(unittest.TestCase):
         self.assertLess(vals[-1], du)
 
 
+class Sedrakian(unittest.TestCase):
+    """Sedrakian (2024) proton-spectral-width emissivity, calculations/multi_eos/sedrakian.py."""
+
+    @classmethod
+    def setUpClass(cls):
+        from calculations.multi_eos import sedrakian as S
+        cls.S = S
+        cls.bcp, cls.bsk, cls.dd2 = E.load_bcp(), E.load_bsk22(), E.load_dd2()
+
+    def test_zero_width_recovers_sharp_kinematics(self):
+        d = self.dd2.state(0.3)                      # gap ~ 49 MeV >> T
+        self.assertLess(self.S.ratio(d, d['pe'], width_scale=0.0), 1e-20)
+        d = self.bsk.state(0.5)                      # far above threshold
+        self.assertAlmostEqual(self.S.ratio(d, d['pe'], width_scale=0.0), 1.0, delta=1e-4)
+
+    def test_finite_width_tends_to_du_above_threshold(self):
+        for d in (self.bcp.state(0.8), self.bsk.state(0.6)):
+            qe, _ = self.S.sedrakian(d)
+            self.assertAlmostEqual(qe / R.du(d)[0], 1.0, delta=1e-3)
+
+    def test_subthreshold_rate_is_linear_in_width(self):
+        d = self.dd2.state(0.3)
+        r1 = self.S.ratio(d, d['pe'])
+        r2 = self.S.ratio(d, d['pe'], width_scale=2.0)
+        self.assertAlmostEqual(r2 / r1, 2.0, delta=2e-3)
+
+    def test_width_coefficient_by_hand(self):
+        d = self.dd2.state(0.16)
+        mun, mup = d['pn']**2 / (2 * d['mLn']), d['pp']**2 / (2 * d['mLp'])
+        a = E.HBARC * d['pp'] / d['mLp'] / mup * (7 * 0.16 * d['Yn'] / mun + 4 * 0.16 * d['Yp'] / mup)
+        self.assertAlmostEqual(self.S.width_coefficient(d) / a, 1.0, places=12)
+
+    def test_grid_convergence(self):
+        S = self.S
+        d = self.bcp.state(0.5)                      # 0.5 MeV from threshold: hardest case
+        base_val = S.ratio(d, d['pe'])
+        saved = S._X, S._Y, S._XNU
+        try:
+            S._X, S._Y, S._XNU = (np.linspace(-60, 60, 2401), np.linspace(-90, 90, 3601),
+                                  np.linspace(0, 80, 1601))
+            fine = S.ratio(d, d['pe'])
+        finally:
+            S._X, S._Y, S._XNU = saved
+        self.assertLess(abs(base_val / fine - 1), 2e-4)
+
+
 @unittest.skipUnless((EXT / 'BCP_NLRMF_N' / 'eos.thermo.ns').exists(), 'CompOSE BCP table not downloaded')
 class TOV(unittest.TestCase):
     def test_bcp_maximum_mass_matches_compose(self):
