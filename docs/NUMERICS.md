@@ -1,10 +1,10 @@
-# Multi-EOS Urca comparison (numerical track)
+# Numerical track: multi-EOS Urca comparison
 
-**Status:** research prototype, local branch `numerics-multi-eos`, 27 November 2026. EOS-dependent numerical results; they do **not** belong in the theory HTML. The original DD2 baseline (`calculations/`, `report/summary.html`) is unchanged.
+**Status:** research prototype, 27 November 2026. EOS-dependent numerical results; they do **not** belong in the theory HTML ([report/urca_physics_comparison.html](../report/urca_physics_comparison.html)). Differences between prescriptions are not an error band.
 
 ## Purpose
 
-Compare the emissivity prescriptions already implemented for DD2 across three equations of state, using one common kinematic pipeline:
+Evaluate the emissivity prescriptions compared in the theory reference on three equations of state, using one common kinematic pipeline:
 
 | EOS | CompOSE id | Type | Inputs used | Electron DU onset | Muon DU onset | M<sub>max</sub> (TOV) |
 |---|---|---|---|---|---|---|
@@ -20,14 +20,14 @@ Thresholds are from the exact triangle condition p<sub>Fn</sub> ≤ p<sub>Fp</su
    * RMF: ε(p) = √(p² + m<sub>D</sub>²) + V, so m<sub>L</sub> = √(p<sub>F</sub>² + m<sub>D</sub>²).
    * Skyrme: ε(p) = m + p²/2m* + U, so m<sub>L</sub> = m* (tabulated).
 2. **Cold npeμ β-equilibrium with muons for both RMFs**, solved from the tabulated self-energies on the (n<sub>B</sub>, Y<sub>q</sub>) grid at the lowest temperature (0.1 MeV); the 3D tables themselves contain no muons. Validated on DD2 against the CompOSE cold table (|ΔY<sub>p</sub>| < 10⁻⁵). For BSk22 the cold table's own fractions are used.
-3. **Same rate code as the DD2 baseline.** `calculations/multi_eos/rates.py` imports `compare_compose_four.py`; on DD2 the new pipeline reproduces the baseline CSV to < 2×10⁻⁴ (difference = β-solve vs cold table).
+3. **One rate implementation.** All prescriptions live in `numerics/prescriptions.py` (plus `sedrakian.py`, `mmu.py`); on DD2 the pipeline reproduces the earlier single-EOS DD2 results (frozen in the tests) to < 2×10⁻⁴, the difference being the β-solve versus the cold table.
 4. **DU and NWA share one kernel.** The sharp DU rate is the zero-width limit of the degenerate kernel inside the adapted NWA; above threshold NWA → DU (tested to 1%).
 5. **Applicability is enforced, not extrapolated.** Shternin's R<sub>A,B</sub> are returned as NaN at/above the DU threshold (gap ≤ 1 MeV). The adapted NWA is a Lorentz-scalar (Dirac) mass convolution and is not defined for the Skyrme EOS (NaN for BSk22). FM and Bottaro MU formulas are evaluated everywhere for comparison; above the DU threshold they are subdominant.
 6. **Temperature** T = 10⁹ K for all; electron + muon channels summed; neutron-branch MU only.
 
 ## Results (T = 10⁹ K)
 
-Figures: `figures/multi_eos/urca_multi_eos_T9.png` (emissivities and ratio to FM; DU thresholds and central densities of 1.4 M☉ and M<sub>max</sub> stars marked) and `figures/multi_eos/eos_inputs_multi.png` (fractions, effective masses, DU gaps). CSV per EOS in the same folder.
+Figures: `results/urca_multi_eos_T9.png` (emissivities and ratio to FM; DU thresholds and central densities of 1.4 M☉ and M<sub>max</sub> stars marked) and `results/eos_inputs_multi.png` (fractions, effective masses, DU gaps). CSV per EOS in `results/`.
 
 Emissivities (erg cm⁻³ s⁻¹) at n<sub>B</sub>=0.16 fm⁻³ and at the central density of a 1.4 M☉ star:
 
@@ -45,11 +45,11 @@ Observations (numerical, prescription-dependent):
 * **EOS effective masses matter as much as the prescription.** At saturation density the same FM formula differs by ×3.2 between DD2 and BSk22, almost entirely from (m<sub>L,n</sub>)³m<sub>L,p</sub>. The prescription spread at fixed EOS is larger (Bottaro/FM ≈ 0.4–0.6; Shternin/FM ≈ 3–7; NWA/FM ≈ 15–30 far below threshold).
 * **Approaching threshold** (BCP, BSk22) Shternin's zero-width factor grows ∝ 1/Δp and must be cut off; the adapted NWA rises continuously into the DU rate (BCP panel). BCP stays within ~8 MeV of the electron threshold up to 1.1 fm⁻³, so it probes the near-threshold regime over a wide density range.
 * **BSk22 Landau masses fall to ~0.15 m** at the highest densities, which makes all MU formulas decrease with density there; this is a property of the Skyrme functional, not of the Urca prescriptions.
-* **The adapted NWA lies ~15–30× above FM far below threshold** for both RMFs. This is the known behavior of our adapted (degenerate-kernel) NWA and is not a validated microscopic MU rate; see `docs/METHODS.md` and the theory HTML (Alford section) for why width-only bare-vertex responses need not reproduce the MU amplitude.
+* **The adapted NWA lies ~15–30× above FM far below threshold** for both RMFs. This is the known behavior of our adapted (degenerate-kernel) NWA and is not a validated microscopic MU rate; see the prescription summary below and the theory HTML (Alford section) for why width-only bare-vertex responses need not reproduce the MU amplitude.
 
 ## Sedrakian (2024) proton spectral width
 
-Implemented in `calculations/multi_eos/sedrakian.py` from PRL 133, 171401 (arXiv:2406.16183v3), Eqs. (13), (16), (17), as the ratio to the sharp DU emissivity:
+Implemented in `numerics/sedrakian.py` from PRL 133, 171401 (arXiv:2406.16183v3), Eqs. (13), (16), (17), as the ratio to the sharp DU emissivity:
 
 * Q = ε<sub>0</sub> · I(γ<sub>p</sub>)/I<sub>ref</sub>, where I is the energy integral of Eq. (13) with L<sub>1</sub> from Eq. (16), and I<sub>ref</sub> the same integral with fully allowed kinematics. ε<sub>0</sub> is the repository's DU kernel (457π/10080)G²(1+3g<sub>A</sub>²)m<sub>L,n</sub>m<sub>L,p</sub>μ<sub>e</sub>T⁶, so the result equals the sharp DU rate above threshold (tested to 10⁻³). The paper's Eq. (4) writes g<sub>A</sub>² only; using the standard (1+3g<sub>A</sub>²) keeps Sedrakian, NWA and DU on one normalization.
 * Width, Eq. (17): γ<sub>p</sub> = a<sub>p</sub>T²[1 + ((ε−μ<sub>p</sub>)/πT)²], a<sub>p</sub> = (ħv<sub>Fp</sub>/μ<sub>p</sub>) Σ<sub>τ</sub> σ̄<sub>pτ</sub>n<sub>τ</sub>/μ<sub>τ</sub> with σ̄<sub>np</sub> = 7 fm², σ̄<sub>pp</sub> = 4 fm² and μ<sub>τ</sub> the kinetic Fermi energies p<sub>F</sub>²/2m*. For our EOSs a<sub>p</sub> ≈ 0.02–0.06 MeV⁻¹, i.e. γ<sub>p</sub>(μ<sub>p</sub>) ≈ 2–5×10⁻⁴ MeV at T = 10⁹ K.
@@ -62,7 +62,7 @@ Implemented in `calculations/multi_eos/sedrakian.py` from PRL 133, 171401 (arXiv
 
 ## Voskresensky medium-modified Urca (first approximation, for reference)
 
-Implemented in `calculations/multi_eos/mmu.py` with the parametrization approved on 27 November 2026. **The pion gap and vertex factors are published model fits in n/n₀ (n₀ = 0.16 fm⁻³ for all EOSs), not EOS quantities**; only composition, Fermi momenta and Landau masses come from each EOS.
+Implemented in `numerics/mmu.py` with the parametrization approved on 27 November 2026. **The pion gap and vertex factors are published model fits in n/n₀ (n₀ = 0.16 fm⁻³ for all EOSs), not EOS quantities**; only composition, Fermi momenta and Landau masses come from each EOS.
 
 * Vertex factor Γ(n) = 1/[1 + C(n/n₀)^{1/3}], C = 1.6 (BGV04 text near Eq. 5: C ≃ 1.4–1.6; BGV13 Eq. 3; KV15).
 * Pion gap ω̃²/m<sub>π</sub>²: BGV04 Fig. 1 curve 1a, **digitized** from the vector figure in the arXiv source (no formula is published): 1.0 at 0.8n₀, 0.996 at n₀, 0.734 at 2n₀, 0.27 at 3n₀; saturated above the critical density (curve 1b). Baseline n<sub>c</sub><sup>π</sup> = 3n₀; variant n<sub>c</sub><sup>π</sup> = 2n₀ with plateau 0.216 (Grigorian–Voskresensky–Blaschke 2016 family), built by us by compressing the 1a shape in density. Same gap for π⁰ and π±, α = 1 (no condensate), as in the cooling papers.
@@ -84,19 +84,37 @@ Both Bottaro curves keep the historical β<sub>n</sub> = 0.68, as in the paper. 
 * **BSk22 μ<sub>e</sub>:** the tabulated μ<sub>e</sub> exceeds the free-electron value for the tabulated Y<sub>e</sub> by ≈0.1% (0.1–0.45 MeV); the free-electron value is used.
 * **RMF tables at T=0.1 MeV** rather than T=0: thermal shifts of μ are ~2×10⁻⁴ MeV (negligible here).
 
+## Prescriptions (numerics/prescriptions.py)
+
+* **FM79 / NSCool legacy, neutron branch:** Q = 8.55×10²¹ (m<sub>L,n</sub>/m<sub>n</sub>)³(m<sub>L,p</sub>/m<sub>p</sub>)(k<sub>Fe</sub>+k<sub>Fμ</sub>)/1.68 α<sub>n</sub>β<sub>n</sub>T₉⁸ (k in fm⁻¹), α<sub>n</sub> = 1.76 − 0.63(1.68/k<sub>Fn</sub>)² (the form of FM79 Eq. 62), β<sub>n</sub> = 0.68.
+* **Bottaro et al., triangular** (Eqs. 3.28–3.29): OPE + magnetic ρ exchange (C<sub>ρ</sub> = 1.4, m<sub>ρ</sub> = 769 MeV) + Landau couplings F₀′ = 0.7, G₀ = 1.1 converted with the bare nucleon mass (FM79 Eqs. 20–22 convention), f<sub>π</sub> = 1, g<sub>A</sub> = 1.275, β<sub>n</sub> = 0.68, constant weak denominators; α<sub>B</sub> = ½(21/16)[(32/7)(m<sub>π</sub>/f<sub>π</sub>)⁴(f′−g)² + 2(η<sub>π</sub> − C<sub>ρ</sub>η<sub>ρ</sub>)²] with η<sub>M</sub> = p<sub>Fn</sub>²/(p<sub>Fn</sub>²+m<sub>M</sub>²).
+* **Bottaro et al., nontriangular** (Eq. 3.34): four-dimensional angular integral with finite proton and lepton momenta (scrambled Sobol, 2¹⁴ points), direct + exchange + interference, normalized to its own triangular limit. Uses the **corrected** Eq. (3.31): `numerics/validation_bottaro_spin_isospin.py` reconstructs the amplitudes in spin–isospin space and finds an excess factor 2 in the printed quadratic axial interference terms (run in the tests).
+* **Shternin et al.:** Q = 8.1×10²¹(m<sub>L,n</sub>/m<sub>n</sub>)³(m<sub>L,p</sub>/m<sub>p</sub>)(p<sub>Fℓ</sub>/μ<sub>e</sub>)(n<sub>p</sub>/n₀)<sup>1/3</sup>T₉⁸ (0.6R<sub>A</sub> + 0.2R<sub>B</sub>), with analytic zero-width R<sub>A</sub>, R<sub>B</sub>; coefficients imported from the paper's BHF calculation, not rederived per EOS.
+* **Adapted Alford NWA:** Breit–Wigner Dirac-mass convolution (W<sub>n</sub> = W<sub>p</sub> = T²/5 MeV) of the triangle condition at fixed kinetic Fermi energies, times the degenerate DU kernel. Not the paper's full finite-temperature relativistic response.
+* **DU:** (457π/10080)G²(1+3g<sub>A</sub>²)m<sub>L,n</sub>m<sub>L,p</sub>μ<sub>e</sub>T⁶ with the sharp triangle condition, per lepton.
+
+## Data provenance
+
+* **DD2:** derived from CompOSE EOS 302 (cold; sha256 7e9d8acb…f247) and EOS 301 (general purpose; sha256 163efbc9…2c3f) with `tools/extract_compose_dd2.py`; full hashes in that script. `numerics/data/DD2_micro_first_two_T.npz` holds V<sub>n</sub>, S<sub>n</sub>, V<sub>p</sub>, S<sub>p</sub> for the two lowest temperatures; `DD2_cold_composition.csv` is used only to validate the β-solve.
+* **BCP(NLRMF-N):** CompOSE EOS 350, lowest-temperature slice extracted with `tools/extract_compose_slice.py` into `numerics/data/BCP_NLRMF_N_T0.npz`.
+* **BSk22:** CompOSE EOS 256, homogeneous-core rows in `numerics/data/BSk22_core.npz`.
+* Original CompOSE tables are not redistributed; download them into `external_eos/` (gitignored) to regenerate extracts or the TOV cache `numerics/data/stars.json`.
+
 ## Reproduce
 
 ```bash
-# 1. Download the CompOSE tables into external_eos/ (gitignored; not redistributed)
-#    BSk22:  https://compose.obspm.fr/download/1D/NS/Skyrme/BSK22/eos.zip       -> external_eos/BSk22/
-#    BCP:    https://compose.obspm.fr/download/3D/Barman/Nucleonic/eos.zip      -> external_eos/BCP_NLRMF_N/  (60 MB)
-#    DD2 cold (for TOV only): https://compose.obspm.fr/download/1D/NS/RMF/DD2_Typel/eos.zip -> external_eos/DD2_cold/
-# 2. Derived extracts (already in calculations/multi_eos/data/):
-python tools/extract_compose_slice.py --dir external_eos/BCP_NLRMF_N --out calculations/multi_eos/data/BCP_NLRMF_N_T0.npz
-# 3. Scan, figures, CSV (~20 s; TOV results cached in figures/multi_eos/stars.json)
-python -m calculations.multi_eos.run_compare --points 120
-# 4. Tests (TOV test skipped without external_eos/)
-python -m unittest tests.test_multi_eos -v
+python -m numerics.run_compare --points 120     # ~75 s; writes results/
+python -m unittest discover -s tests -v         # 22 tests; the TOV test needs external_eos/
+```
+
+To regenerate inputs from CompOSE (gitignored `external_eos/`):
+
+```bash
+# BSk22: https://compose.obspm.fr/download/1D/NS/Skyrme/BSK22/eos.zip       -> external_eos/BSk22/
+# BCP:   https://compose.obspm.fr/download/3D/Barman/Nucleonic/eos.zip      -> external_eos/BCP_NLRMF_N/  (60 MB)
+# DD2 cold (TOV only): https://compose.obspm.fr/download/1D/NS/RMF/DD2_Typel/eos.zip -> external_eos/DD2_cold/
+python tools/extract_compose_slice.py --dir external_eos/BCP_NLRMF_N --out numerics/data/BCP_NLRMF_N_T0.npz
+python tools/extract_compose_dd2.py --cold <eos302.zip> --general <eos301.zip> --out numerics/data/
 ```
 
 ## Not done / next steps

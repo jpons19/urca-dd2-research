@@ -1,34 +1,8 @@
-# Reproducibility verification — 22 November 2026
+# Verification log
 
-### Archives
+Record of primary-source checks behind the theory reference and of input checks for the numerical track. Earlier single-EOS DD2 regeneration records were removed with that pipeline (see git history before commit ba91fca).
 
-Using the two uploaded original CompOSE archives and `tools/extract_compose.py`:
-
-- Cold composition re-extraction: identical shapes, maximum absolute difference `1.14e-13` (roundoff from CSV formatting).
-- General-purpose micro extract: exact equality for `nB`, `Tgrid`, `Yqgrid`, and all `Vn,Sn,Vp,Sp` values in the two stored T slices.
-- General-purpose fractions extract: exact equality for `nB`, `Yqgrid`, and all stored fraction values in the first two T slices.
-
-Only **homogeneous-core** cold matter is checked using `Yp=Ye+Ymu`: below the core, nuclei and other components must be accounted for. The extractor intentionally does not impose npeμ charge neutrality on the full cold table.
-
-### Full regeneration
-
-From the root of the packaged project, these operations were completed successfully:
-
-```bash
-python calculations/build_final.py
-python calculations/run_dd2_T8_reference.py
-python calculations/test_final.py
-python calculations/test_T8_reference.py
-python -m unittest discover -s tests -v
-python prior_audit/murca_spin_isospin_audit.py
-python prior_audit/murca_angular_factor_test.py
-```
-
-T9 and T8 plot/data reruns completed in ~8 and ~9 seconds respectively on the verification environment; timings are environment-dependent, and the production quality of the physics models is not implied by these quick runs.
-
-Additional tests: four unittest cases pass (input axes; chemical/kinematic constraints; lepton sums; actual recalculation of all four rates at three benchmark densities). The `prior_audit` test confirms the known `g′` cancellation and the printed Eq. (3.31) diagnostic, but does not verify a published code implementation.
-
-# Primary-source verification — 27 November 2026
+## Primary-source verification — 27 November 2026
 
 FM79 (ApJ 232, 541) checked page by page against the NASA ADS scan (not stored in the repository):
 
@@ -59,3 +33,10 @@ Voskresenskiĭ & Senatorov (1986), Sov. Phys. JETP 63, 885, checked from a scann
 - Eqs. (4.3)–(4.5), p. 891: vector-current term ∝ 1−β+κ, absent with vacuum pion propagator; footnote 3, p. 896: β≠1 even for Π→0 because of μ_π.
 - Exchange added coherently, Eqs. (4.6)–(4.9), p. 892; results Eqs. (4.10)–(4.11) and comparison with FM79, p. 892.
 - Added to the master HTML bibliography as ref. [11] and to the Voskresensky section; further-reading entries renumbered [12]–[17].
+
+## Numerical inputs (multi-EOS track) — 27 November 2026
+
+- BCP(NLRMF-N): μ = √(p<sub>F</sub>² + m<sub>D</sub>²) + V reproduces the tabulated chemical potentials (10⁻³ MeV at T = 0.1 MeV); micro indices 10041/11041 (Dirac m*/m) and 10051/11051 (vector self-energy).
+- DD2: our npeμ β-equilibrium solve reproduces the CompOSE cold table (|ΔY<sub>p</sub>| < 10⁻⁵).
+- BSk22: neutron dispersion m + p<sub>F</sub>²/2m* + U reproduces μ<sub>n</sub> to 10⁻⁴ MeV; the proton relation fails by up to ~35 MeV in parts of the core (table issue, documented in docs/NUMERICS.md and a test).
+- TOV: M<sub>max</sub> and R(1.4 M☉) reproduce the CompOSE M–R tables of all three EOSs (ΔM < 0.005 M☉, ΔR < 0.01 km).

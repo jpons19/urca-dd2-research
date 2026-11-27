@@ -3,7 +3,7 @@
 
 Usage:
     python tools/extract_compose_slice.py --dir external_eos/BCP_NLRMF_N \
-        --out calculations/multi_eos/data/BCP_NLRMF_N_T0.npz
+        --out numerics/data/BCP_NLRMF_N_T0.npz
 
 Reads eos.nb, eos.yq, eos.t, eos.micro, eos.thermo and eos.compo (uncompressed,
 CompOSE ASCII format) and keeps only temperature index 1.  Stored arrays:

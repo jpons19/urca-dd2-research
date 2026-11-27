@@ -4,14 +4,14 @@ This file gives **persistent instructions to future assistants, Codex agents and
 
 ## Purpose and two-track architecture
 
-1. **General theory (authoritative comparative reference):** `report/urca_physics_comparison.html` is a **self-contained HTML document** comparing **the original research papers**, independent of any equation of state, numerical data, source-code implementation, model-specific plots or cooling simulations. Its matrix covers physical ingredients across Friman–Maxwell (1979), Bottaro et al. (2024), Shternin et al. (2018), Alford et al. (2024), and Voskresensky (2001 review). Each row/cell should be supported by detailed expandable explanations and original-source references. Theories are **not** to be reduced to yes/no comparisons when there are material qualifications.
-2. **Numerical applications (separate):** `calculations/`, `tests/`, `figures/`, `report/summary.html`, `report/pion_softening.html`, and `docs/METHODS.md` document EOS-dependent implementations, numerical assumptions, validation and exploratory sensitivity analyses. Those results may motivate questions for the theory track, **but never appear as an EOS-specific assertion inside the master theory HTML**.
+1. **General theory (authoritative comparative reference):** `report/urca_physics_comparison.html` is a **self-contained HTML document** comparing **the original research papers**, independent of any equation of state, numerical data, source-code implementation, model-specific plots or cooling simulations. Its matrix covers physical ingredients across Friman–Maxwell (1979), Bottaro et al. (2024), Shternin et al. (2018), Alford et al. (2024), Sedrakian (2024) and Voskresensky (2001 review, with Voskresenskiĭ & Senatorov 1986), plus an outlook block (F) for the chiral-EFT / in-medium pion subproject. Each row/cell should be supported by detailed expandable explanations and original-source references. Theories are **not** to be reduced to yes/no comparisons when there are material qualifications.
+2. **Numerical applications (separate):** `numerics/`, `results/`, `tests/`, `tools/` and `docs/NUMERICS.md` document the multi-EOS implementations, numerical assumptions, validation and sensitivity analyses. Those results may motivate questions for the theory track, **but never appear as an EOS-specific assertion inside the master theory HTML**.
 
 The repository is a scientific research prototype, not a validated production cooling library. Do not imply that different approximations form a statistical error band.
 
 ## Agreed incremental theory-review procedure
 
-1. **One approach or ingredient at a time.** FM79 and Bottaro have the first substantial detailed analysis; Shternin, Alford and Voskresensky have **provisional** overview cells pending their own full audits. Do not relabel provisional assessments as verified without revisiting the primary paper.
+1. **One approach or ingredient at a time.** The audit status of each paper is given in the last row of the matrix; block F (subproject) is planning material, not an audited comparison. Do not relabel provisional assessments as verified without revisiting the primary paper.
 2. **Read the primary source before editing scientific claims.** Record original-paper page numbers (printed page and PDF page if different), equation/table/figure numbers and an exact source URL. If access or verification is incomplete, explicitly state the uncertainty and leave a TODO; do not invent citations or attribute later NSCool conventions to FM79.
 3. **Compare physical ingredients explicitly:** OPE and pion propagator; rho exchange; contact/Landau–Migdal terms; short-range correlations (and their normalization); direct/exchange/interference; triangular/angular approximations; intermediate nucleon recoil and near-shell effects; effective masses; collision widths/spectral functions; weak vertices/medium-current diagrams; neutron/proton branches; limitations and overlap. Distinguish calculations performed in the original paper from qualitative discussion or later adaptations.
 4. **Update matrix and explanation together.** Each changed cell links conceptually to the matching expandable detailed subsection; explain the approximation, the formula and its validity. Include historical source attribution and whether a phenomenological coefficient was freshly derived or inherited.
@@ -37,7 +37,7 @@ Maintain [docs/THEORY_OPEN_QUESTIONS.md](docs/THEORY_OPEN_QUESTIONS.md) alongsid
 ## Repository hygiene and delivery
 
 - Preserve published-paper PDFs outside the repo unless redistribution rights are clear. Link to original papers in `docs/REFERENCES.md`. Do not commit the large original EOS archives.
-- Avoid deleting historical reports, figures or prior audits merely because the new master theory reference exists. Link them in the appropriate numerical or audit track; remove only clear duplications with approval.
+- On 27 November 2026, at the owner's request, the single-EOS DD2 reports, figures, the static pion-screening scan and the earlier audit folder were removed (recoverable from git history, last present in commit ba91fca); the Bottaro spin–isospin check was kept as `numerics/validation_bottaro_spin_isospin.py`. Do not delete further material without approval.
 - Before editing, inspect current main and local uncommitted changes. Prefer focused commits (theory/editorial versus numerical), readable messages, and no unrelated refactoring. Do not overwrite remote changes.
 - Update README/CONTRIBUTING/ROADMAP only when the workflow or status changes. Keep the master theory reference as a **single editable HTML**; external mathematical notes are optional supporting material, not prerequisites to understanding it.
 - After committing, provide the commit SHA, changed-file list, what was verified, and any unresolved primary-source checks.
@@ -47,7 +47,6 @@ Maintain [docs/THEORY_OPEN_QUESTIONS.md](docs/THEORY_OPEN_QUESTIONS.md) alongsid
 - Theory overview: [report/urca_physics_comparison.html](report/urca_physics_comparison.html)
 - Open issues: [docs/THEORY_OPEN_QUESTIONS.md](docs/THEORY_OPEN_QUESTIONS.md)
 - Source list: [docs/REFERENCES.md](docs/REFERENCES.md)
-- Numerical report: [report/summary.html](report/summary.html)
-- Numerical methods and validation: [docs/METHODS.md](docs/METHODS.md), [docs/VALIDATION.md](docs/VALIDATION.md)
-- Existing pion-softening study: [docs/PION_SOFTENING.md](docs/PION_SOFTENING.md), [docs/PION_SCREENING_SCAN.md](docs/PION_SCREENING_SCAN.md)
+- Numerical track (multi-EOS): [docs/NUMERICS.md](docs/NUMERICS.md), code in `numerics/`, outputs in `results/`
+- Source-verification record: [docs/VERIFICATION_LOG.md](docs/VERIFICATION_LOG.md)
 - Current priorities: [docs/ROADMAP.md](docs/ROADMAP.md)

@@ -32,10 +32,10 @@ The ratio form jumps by ~1.9 at 0.8 n0 by construction.
 import numpy as np
 from scipy.interpolate import PchipInterpolator
 
-from . import rates as R
+from . import prescriptions as P
 
 N0 = 0.16          # fm^-3
-MPI = 139.57       # MeV (charged-pion mass, as in compare_compose_four)
+MPI = P.MPI         # MeV, charged-pion mass
 C_GAMMA = 1.6
 N_LOW = 0.8        # n/n0 below which plain MU is used
 
@@ -70,7 +70,7 @@ def ratio_factor(x, g2, C=C_GAMMA):
 
 def mmu_ratio_form(d, nc=3.0, C=C_GAMMA, unsoftened=False):
     """Total (e + mu) MMU emissivity in the ratio form, erg cm^-3 s^-1."""
-    eps_mu = sum(R.base.fm(d))
+    eps_mu = sum(P.fm(d))
     x = d['nb'] / N0
     if x < N_LOW:
         return np.nan if unsoftened else eps_mu
@@ -85,9 +85,9 @@ def mmu_direct_form(d, nc=3.0, C=1.4):
         return np.nan
     G = gamma(x, C)
     F1 = 1.0 + 3.0 / (4.0 * G**2) * x**(2.0 / 3.0)
-    mN = 0.5 * (R.base.MN + R.base.MP)
+    mN = 0.5 * (P.MN + P.MP)
     mass = (d['mLn'] / mN)**3 * (d['mLp'] / mN)
-    return 2.4e24 * F1 * x**(10.0 / 3.0) * mass * G**8 / gap2(x, nc)**4 * R.base.T9**8
+    return 2.4e24 * F1 * x**(10.0 / 3.0) * mass * G**8 / gap2(x, nc)**4 * P.T9**8
 
 
 def all_mmu(d):

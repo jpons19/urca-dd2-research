@@ -18,7 +18,7 @@ the EOS state).  Width, Eq. (17):
     gamma_p(e) = a_p T^2 [1 + (e/(pi T))^2],
     a_p = (hbar v_Fp / mu_p) * sum_{tau=n,p} sigma_ptau n_tau / mu_tau,  sigma_np = 7 fm^2, sigma_pp = 4 fm^2.
 
-Minimum proton energy e_min (our derivation; see docs/MULTI_EOS.md):  for a lepton pair
+Minimum proton energy e_min (our derivation; see docs/NUMERICS.md):  for a lepton pair
 with momentum q = p_Fl and energy w, the neutron is a quasiparticle with kinetic energy
 mu_n + e + w, i.e. momentum k_n = sqrt(2 m_n* (mu_n + e + w)).  Momentum conservation
 allows proton momenta p >= |k_n - q|, so e_min = (k_n - q)^2 / 2 m_p* - mu_p.  At
@@ -32,6 +32,7 @@ with q = p_Fmu; neutron spectral width neglected as in the paper.
 import numpy as np
 
 from . import eos_inputs as E
+from . import prescriptions as P
 from . import rates as R
 
 HBARC = E.HBARC
@@ -39,7 +40,7 @@ SIGMA_NP, SIGMA_PP = 7.0, 4.0      # fm^2, Sedrakian (2024) text below Eq. (17)
 
 # Dimensionless integration grids (units of T).
 # Step 0.1 T; converged to < 1e-4 relative against a 4x finer, 1.5x wider grid
-# (tests/test_multi_eos.py and docs/MULTI_EOS.md).
+# (tests/test_numerics.py and docs/NUMERICS.md).
 _X = np.linspace(-40.0, 40.0, 801)           # w / T, energy carried by the lepton pair
 _Y = np.linspace(-60.0, 60.0, 1201)          # e / T, proton energy relative to mu_p
 _XNU = np.linspace(0.0, 60.0, 601)           # w_nu / T
@@ -74,7 +75,7 @@ def ratio(d, q, T=None, a_p=None, width_scale=1.0):
     """I(gamma_p)/I_ref for lepton momentum q (MeV).  width_scale multiplies a_p (tests)."""
     if q <= 0:
         return 0.0
-    T = R.base.T if T is None else T
+    T = P.T if T is None else T
     a_p = width_coefficient(d) if a_p is None else a_p
     a_p = a_p * width_scale
     mn, mp = d['mLn'], d['mLp']

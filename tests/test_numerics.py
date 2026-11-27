@@ -1,8 +1,8 @@
-"""Tests for the multi-EOS Urca comparison (calculations/multi_eos).
+"""Tests for the multi-EOS Urca comparison (numerics/).
 
-Fast checks use only repository data (DD2 extracts, BCP and BSk22 derived
-extracts in calculations/multi_eos/data).  Checks that need the downloaded
-CompOSE tables in external_eos/ are skipped when those files are absent.
+Fast checks use only repository data (derived DD2, BCP and BSk22 extracts in
+numerics/data).  Checks that need the downloaded CompOSE tables in external_eos/
+are skipped when those files are absent.
 """
 from pathlib import Path
 import sys
@@ -11,7 +11,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from calculations.multi_eos import eos_inputs as E, rates as R  # noqa: E402
+from numerics import eos_inputs as E, prescriptions as P, rates as R  # noqa: E402
 
 EXT = ROOT / 'external_eos'
 
@@ -33,7 +33,7 @@ class RMFInputs(unittest.TestCase):
                 self.assertAlmostEqual(np.hypot(pp, mdp) + vp, z["mu_p"][iy, ib], delta=1e-3)
 
     def test_dd2_beta_solver_reproduces_cold_table(self):
-        cold = np.genfromtxt(ROOT / 'calculations' / 'DD2_cold_composition.csv', delimiter=',', names=True)
+        cold = np.genfromtxt(E.DATA / 'DD2_cold_composition.csv', delimiter=',', names=True)
         for n in (0.16, 0.3, 0.5, 0.8, 0.98):
             s = self.dd2.state(n)
             for key, col in (('Yp', 'Yp'), ('Ye', 'Ye'), ('Ym', 'Ymu')):
@@ -78,17 +78,27 @@ class SkyrmeInputs(unittest.TestCase):
 
 
 class Rates(unittest.TestCase):
-    def test_dd2_pipeline_reproduces_baseline_csv(self):
-        ref = np.genfromtxt(ROOT / 'calculations' / 'PT_GRDF2_DD2_final_T9.csv', delimiter=',', names=True)
+    # Frozen DD2 reference (former single-EOS pipeline: cold-table composition, T=0.1 MeV micro
+    # slice; erg cm^-3 s^-1, e + mu).  The multi-EOS pipeline solves beta equilibrium itself, so
+    # agreement at the 1e-4 level is expected.
+    DD2_REFERENCE = {
+        0.16: dict(FM=5.776261206242971e+20, Bottaro=3.0490457881966215e+20,
+                   Bottaro_nontri=3.290465356803914e+20, Shternin=2.693035414915336e+21,
+                   NWA=9.705046575909138e+21),
+        0.5: dict(FM=5.7812438911314625e+20, Bottaro=1.875307834372843e+20,
+                  Bottaro_nontri=2.6200633660670483e+20, Shternin=2.1536042939329547e+21,
+                  NWA=7.157824207448695e+21),
+        0.9: dict(FM=1.0983198317455404e+21, Bottaro=2.391296297342951e+20,
+                  Bottaro_nontri=4.445803648147834e+20, Shternin=7.100786129493361e+21,
+                  NWA=8.919138256441666e+21),
+    }
+
+    def test_dd2_reproduces_frozen_reference(self):
         dd2 = E.load_dd2()
-        cols = {'FM': 'Q_FM_total', 'Bottaro': 'Q_Bottaro_total',
-                'Bottaro_nontri': 'Q_Bottaro_nontriangular_total', 'Shternin': 'Q_Shternin_total',
-                'NWA': 'Q_Alford_NWA_adapted_total'}
-        for n in (0.16, 0.5, 0.9):
-            j = int(np.argmin(abs(ref['nB_fm3'] - n)))
-            r = R.all_rates(dd2.state(float(ref['nB_fm3'][j])))
-            for model, col in cols.items():
-                self.assertLess(abs(sum(r[model]) / ref[col][j] - 1), 2e-4, (n, model))
+        for n, ref in self.DD2_REFERENCE.items():
+            r = R.all_rates(dd2.state(n))
+            for model, value in ref.items():
+                self.assertLess(abs(sum(r[model]) / value - 1), 2e-4, (n, model))
 
     def test_nwa_tends_to_du_above_threshold_and_rules(self):
         bcp, bsk = E.load_bcp(), E.load_bsk22()
@@ -118,11 +128,11 @@ class Rates(unittest.TestCase):
 
 
 class Sedrakian(unittest.TestCase):
-    """Sedrakian (2024) proton-spectral-width emissivity, calculations/multi_eos/sedrakian.py."""
+    """Sedrakian (2024) proton-spectral-width emissivity, numerics/sedrakian.py."""
 
     @classmethod
     def setUpClass(cls):
-        from calculations.multi_eos import sedrakian as S
+        from numerics import sedrakian as S
         cls.S = S
         cls.bcp, cls.bsk, cls.dd2 = E.load_bcp(), E.load_bsk22(), E.load_dd2()
 
@@ -164,11 +174,11 @@ class Sedrakian(unittest.TestCase):
 
 
 class MMU(unittest.TestCase):
-    """Voskresensky MMU first-approximation parametrization, calculations/multi_eos/mmu.py."""
+    """Voskresensky MMU first-approximation parametrization, numerics/mmu.py."""
 
     @classmethod
     def setUpClass(cls):
-        from calculations.multi_eos import mmu as M
+        from numerics import mmu as M
         cls.M, cls.dd2 = M, E.load_dd2()
 
     def test_inputs(self):
@@ -184,12 +194,12 @@ class MMU(unittest.TestCase):
     def test_ratio_form_by_hand(self):
         d = self.dd2.state(0.32)
         x = 2.0
-        expected = sum(R.base.fm(d)) * 3 * x**(10 / 3) * ((1 + 1.6) / (1 + 1.6 * x**(1 / 3)))**6 / 0.734**4
+        expected = sum(P.fm(d)) * 3 * x**(10 / 3) * ((1 + 1.6) / (1 + 1.6 * x**(1 / 3)))**6 / 0.734**4
         self.assertAlmostEqual(self.M.mmu_ratio_form(d) / expected, 1.0, delta=2e-3)
 
     def test_low_density_reduces_to_mu(self):
         d = self.dd2.state(0.12)
-        self.assertEqual(self.M.mmu_ratio_form(d), sum(R.base.fm(d)))
+        self.assertEqual(self.M.mmu_ratio_form(d), sum(P.fm(d)))
         self.assertTrue(np.isnan(self.M.mmu_ratio_form(d, unsoftened=True)))
         self.assertTrue(np.isnan(self.M.mmu_direct_form(d)))
 
@@ -201,13 +211,13 @@ class MMU(unittest.TestCase):
 
     def test_unsoftened_gap_suppresses_pion_term(self):
         d = self.dd2.state(0.16)
-        self.assertLess(self.M.mmu_ratio_form(d, unsoftened=True), 1e-2 * sum(R.base.fm(d)))
+        self.assertLess(self.M.mmu_ratio_form(d, unsoftened=True), 1e-2 * sum(P.fm(d)))
 
 
 @unittest.skipUnless((EXT / 'BCP_NLRMF_N' / 'eos.thermo.ns').exists(), 'CompOSE BCP table not downloaded')
 class TOV(unittest.TestCase):
     def test_bcp_maximum_mass_matches_compose(self):
-        from calculations.multi_eos import tov
+        from numerics import tov
         t = tov.TOV(*tov.read_thermo(EXT / 'BCP_NLRMF_N', 'eos.thermo.ns', 'eos.nb.ns'))
         s = t.sequence(np.linspace(0.72, 0.86, 8))
         mr = np.genfromtxt(EXT / 'BCP_NLRMF_N' / 'eos.mr', comments='#')
@@ -216,3 +226,12 @@ class TOV(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class BottaroTrace(unittest.TestCase):
+    def test_spin_isospin_audit_runs(self):
+        """Independent trace check behind the corrected Eq. (3.31) interference."""
+        import subprocess
+        out = subprocess.run([sys.executable, str(ROOT / 'numerics' / 'validation_bottaro_spin_isospin.py')],
+                             capture_output=True, text=True, check=True).stdout
+        self.assertIn('corrected Eq (3.31): 0.0', out)

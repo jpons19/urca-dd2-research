@@ -25,7 +25,7 @@ from scipy.optimize import brentq
 
 HBARC = 197.3269804
 ME, MMU = 0.51099895, 105.6583755
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 DATA = Path(__file__).resolve().parent / 'data'
 EXTERNAL = ROOT / 'external_eos'
 
@@ -62,7 +62,7 @@ def _finish(nb, yp, mue, nucleon, name, kind, leptons=None):
     d['charge_residual'] = yp - ye - ym
     d['gap_e'] = pn - pp - pe
     d['gap_mu'] = pn - pp - pm if pm > 0 else np.nan
-    # compatibility keys used by calculations/compare_compose_four.py
+    # lower-case aliases used by the prescriptions
     d['ye'], d['ym'], d['yp'] = ye, ym, yp
     return d
 
@@ -103,10 +103,10 @@ class RMFTable:
 
 
 def load_dd2(method='cubic'):
-    """PT(GRDF2-DD2): repository micro extract, T index 0 (0.1 MeV); fields (V_n,S_n,V_p,S_p)."""
-    z = np.load(ROOT / 'calculations' / 'DD2_micro_first_two_T.npz')
+    """PT(GRDF2-DD2): micro extract (tools/extract_compose_dd2.py), T index 0 (0.1 MeV); fields (V_n,S_n,V_p,S_p)."""
+    z = np.load(DATA / 'DD2_micro_first_two_T.npz')
     f = z['fields'][0]                       # (yq, nb, 4)
-    mn, mp = 939.565379, 938.272046          # same constants as compare_compose_four.py
+    mn, mp = 939.565379, 938.272046          # PT(GRDF2-DD2) table masses
     return RMFTable('DD2', z['nB'], z['Yqgrid'], mn - f[..., 1], mp - f[..., 3], f[..., 0], f[..., 2],
                     mn, mp, method)
 

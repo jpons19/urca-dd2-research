@@ -1,6 +1,6 @@
 # References and primary-source index
 
-For theoretical differences among original papers, the master self-contained comparison is [`report/urca_physics_comparison.html`](../report/urca_physics_comparison.html). It is **EOS-independent**. Paper-specific source claims should be checked against the primary works and pinpointed to pages/equations; unverified references remain explicitly flagged. The implementation-specific DD2 methods belong in [`METHODS.md`](METHODS.md), not in that comparative HTML.
+For theoretical differences among original papers, the master self-contained comparison is [`report/urca_physics_comparison.html`](../report/urca_physics_comparison.html). It is **EOS-independent**. Paper-specific source claims should be checked against the primary works and pinpointed to pages/equations; unverified references remain explicitly flagged. Implementation-specific numerical methods belong in [`NUMERICS.md`](NUMERICS.md), not in that comparative HTML.
 
 
 1. B. L. Friman and O. V. Maxwell, “Neutrino Emissivities of Neutron Stars,” *Astrophysical Journal* **232** (1979), 541–557; [original NASA ADS scan](https://adsabs.harvard.edu/pdf/1979ApJ...232..541F). Historical FOPE / NSCool baseline.
@@ -28,4 +28,4 @@ Metadata checked against OpenAlex. Listed in the master HTML bibliography as ref
 18. P. Gysbers et al., “Discrepancy between experimental and theoretical β-decay rates resolved from first principles,” *Nature Phys.* **15** (2019), 428; [doi:10.1038/s41567-019-0450-7](https://doi.org/10.1038/s41567-019-0450-7). Relevant to Q1.
 19. B. Fore and S. Reddy, “Pions in hot dense matter and their astrophysical implications,” *Phys. Rev. C* **101** (2020), 035809; [doi:10.1103/PhysRevC.101.035809](https://doi.org/10.1103/PhysRevC.101.035809); [arXiv:1911.02632](https://arxiv.org/abs/1911.02632). Hot-matter virial pions; in-medium pion subproject (master HTML ref. [18]).
 
-See [PION_SOFTENING.md](PION_SOFTENING.md) for the pion-medium study and [THEORY_OPEN_QUESTIONS.md](THEORY_OPEN_QUESTIONS.md) for the EOS-independent open-issue register. The links provide scientific provenance. No original article PDFs are redistributed in this repository.
+See [THEORY_OPEN_QUESTIONS.md](THEORY_OPEN_QUESTIONS.md) for the EOS-independent open-issue register and [NUMERICS.md](NUMERICS.md) for the numerical track. The links provide scientific provenance. No original article PDFs are redistributed in this repository.

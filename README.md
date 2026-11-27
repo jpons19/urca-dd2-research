@@ -1,109 +1,45 @@
-# Urca neutrino emission: theory comparison and computational research
+# Urca neutrino emission in neutron stars: theory comparison and multi-EOS numerics
 
-This repository has **two deliberately separate tracks**. The theory track is an EOS-independent, self-contained comparison of the original papers. The computational track is a reproducible PT(GRDF2-DD2) research prototype.
+Two deliberately separate tracks.
 
-## Start here
+## 1. Theory reference (start here)
 
-1. **Theory:** [`report/urca_physics_comparison.html`](report/urca_physics_comparison.html) — the **master comparison** of physical ingredients in Friman–Maxwell, Bottaro, Shternin, Alford, Sedrakian and Voskresensky, with expandable paper-by-paper explanations and bibliographic links. Read this first for scientific interpretation. **It contains no EOS-specific assumptions, numerical results or code-derived claims.**
-2. **Computational research:** [`report/summary.html`](report/summary.html) — self-contained numerical DD2 report; [`docs/METHODS.md`](docs/METHODS.md) and [`docs/VALIDATION.md`](docs/VALIDATION.md) explain implementation and limitations.
-3. **Open theoretical questions:** [`docs/THEORY_OPEN_QUESTIONS.md`](docs/THEORY_OPEN_QUESTIONS.md) — a source-aware issue register, including the unsoftened-pion intermediate-state current question.
-4. **Working procedure for humans and assistants:** [`AGENTS.md`](AGENTS.md) — the editorial/research protocol governing updates to both tracks. [`CONTRIBUTING.md`](CONTRIBUTING.md) provides the short checklist.
+[`report/urca_physics_comparison.html`](report/urca_physics_comparison.html) — a self-contained, EOS-independent comparison of the physical ingredients of the original papers: Friman & Maxwell (1979), Bottaro et al. (2024), Shternin et al. (2018), Alford et al. (2024), Sedrakian (2024) and Voskresensky (2001, with Voskresenskiĭ & Senatorov 1986). A grouped matrix links to expandable, source-checked explanations, a bibliography and a list of source checks; block F opens a subproject on chiral-EFT currents and in-medium pions. Open the file in any browser; no build step.
 
-## Numerical research prototype
+Supporting documents:
 
-A reproducible **research prototype** comparing five rate prescriptions from four literature-inspired approaches to neutron-star modified Urca / collisional charged-current neutrino emission, using **the same real CompOSE PT(GRDF2-DD2)** cold composition and general-purpose microscopic fields.
+* [`docs/THEORY_OPEN_QUESTIONS.md`](docs/THEORY_OPEN_QUESTIONS.md) — open-issue register (Q1: unsoftened intermediate-state currents; Q4: β<sub>n</sub> = 0.68 and its overlap with ρ exchange).
+* [`docs/REFERENCES.md`](docs/REFERENCES.md) — references with DOIs and arXiv links.
+* [`docs/VERIFICATION_LOG.md`](docs/VERIFICATION_LOG.md) — record of primary-source checks.
 
-**Status:** 26 November 2026 (static screening-mass study implemented; original numerical baseline remains intact). **Temperatures:** \(10^8\) and \(10^9\) K. **Core density:** \(0.16\)–\(0.98\) fm\(^{-3}\). **Particle channels:** electron and muon, treated separately then summed.
+## 2. Numerical track: multi-EOS comparison
 
-The computational work is designed for further research, **not yet a production cooling microphysics library**. Its assumptions and results must not be presented as statements made by the original authors.
+[`docs/NUMERICS.md`](docs/NUMERICS.md) describes the method, consistency choices, results and caveats. The code in [`numerics/`](numerics/) evaluates FM79/NSCool, Bottaro (triangular and nontriangular), Shternin, an adapted Alford width approximation, Sedrakian's proton spectral width, Voskresensky's medium-modified Urca (first-approximation parametrization) and the sharp direct Urca rate on one standardized cold npeμ state per density, for three CompOSE EOSs: PT(GRDF2-DD2), BCP(NLRMF-N) and BSk22.
 
-## Current numerical research direction: pion softening and medium-modified Urca
+![Emissivities at T = 1e9 K for three EOSs](results/urca_multi_eos_T9.png)
 
-**New (26 November 2026):** See [the pion-softening research note](docs/PION_SOFTENING.md) and its [HTML companion](report/pion_softening.html). It consolidates our Friman–Maxwell/Bottaro/Shternin/Alford comparison with Voskresensky's dressed-pion and intermediate-state diagrams. **Commit 2 adds a tested fixed-DD2 static screening-mass sensitivity study; this is not full MMU.** The previous T8/T9 CSV outputs and benchmark plots are unchanged.
+```bash
+python -m pip install -r requirements.txt
+python -m numerics.run_compare --points 120     # writes results/ (~75 s)
+python -m unittest discover -s tests -v         # 22 tests
+```
 
-## Computational files
+The original CompOSE tables are not redistributed; derived extracts are in `numerics/data/`, and `tools/` regenerates them from downloads placed in `external_eos/` (gitignored).
+
+## Layout
 
 | Path | Contents |
 |---|---|
-| `report/urca_physics_comparison.html` | **Master, EOS-independent theoretical comparison; expandable source notes** |
-| `AGENTS.md` | Durable editorial and research instructions |
-| `docs/THEORY_OPEN_QUESTIONS.md` | EOS-independent open-issues register, with proposed A/B/C comparison |
-| `report/summary.html` | Numerical, EOS-specific illustrated research report, works offline |
-| `report/pion_softening.html` | Older DD2-specific numerical companion (not the theory master) |
-| `figures/` | Original calculation figures in PNG and PDF |
-| `calculations/pion_softening/` | New static screening-mass Bottaro triangular/nontriangular experiment (see docs/PION_SCREENING_SCAN.md) |
-| `calculations/compare_compose_four.py` | Five rate prescriptions, setup and optional T9 scan |
-| `calculations/build_final.py` | 0.1 MeV / cold comparison and T9 figure regeneration |
-| `calculations/run_dd2_T8_reference.py` | \(T^2\) extrapolation to T8, beta equilibrium and T8 figures |
-| `calculations/DD2_*` | Reduced CompOSE inputs, including the first two T slices |
-| `calculations/PT_*.csv` | Computed EOS / Urca numerical results for T8 and T9 |
-| `calculations/test_*.py` | Original baseline regression checks |
-| `tests/test_reference.py` | Additional lightweight regression and sample recalculation |
-| `tools/extract_compose.py` | Optional reproducible extraction from *both original* ZIPs |
-| `docs/` | Methods, provenance, interpretation limits, verification log and research roadmap |
-| `prior_audit/` | Independent Bottaro spin/isospin tests and preliminary Fig. 6 diagnostic (separate earlier work) |
+| `report/urca_physics_comparison.html` | Master theory reference |
+| `docs/` | Open questions, references, verification log, roadmap, numerical documentation |
+| `numerics/` | EOS loaders, prescriptions, Sedrakian and MMU modules, TOV solver, scan runner, Bottaro spin–isospin validation |
+| `numerics/data/` | Derived EOS inputs and the TOV cache |
+| `results/` | CSV per EOS and figures |
+| `tests/` | Regression, limit and convergence tests |
+| `tools/` | CompOSE extraction scripts |
 
-The full upstream 182 MB general-purpose archive is intentionally **not committed**. The reduced `.npz` inputs (two temperature slices and four self-energy fields) are sufficient to regenerate the present figures; they are derived data, not the full CompOSE dataset.
+## Working rules
 
-## Quick start
+Read [`AGENTS.md`](AGENTS.md) (protocol for contributors and assistants) and [`CONTRIBUTING.md`](CONTRIBUTING.md). The theory HTML never contains EOS-specific numbers; the numerical track never presents adapted prescriptions as the original authors' results. This is a research prototype, not a validated cooling-microphysics library. No license has been selected yet.
 
-```bash
-python -m venv .venv
-source .venv/bin/activate      # Windows: .venv\Scripts\activate
-python -m pip install -r requirements.txt
-python calculations/test_final.py
-python calculations/test_T8_reference.py
-python -m unittest discover -s tests -v
-```
-
-Recompute the figures and CSV files (both scripts write to `calculations/`):
-
-```bash
-python calculations/build_final.py
-python calculations/run_dd2_T8_reference.py
-```
-
-The calculation includes adaptive Breit–Wigner quadrature and can take longer than the quick regression tests. To inspect only previously generated outputs, open `report/summary.html` or the figures in `figures/`.
-
-If you have the source CompOSE archives, reproduce the reduced data extracts explicitly:
-
-```bash
-python tools/extract_compose.py --cold path/to/cold.zip --general path/to/general.zip --out calculations/
-```
-
-This will overwrite the supplied reduced inputs; rerun the calculations and tests afterwards.
-
-## Model coverage at a glance
-
-- **Friman–Maxwell (1979), NSCool neutron branch:** OPE-based historical `alpha_n` and `beta_n` suppression factors, fixed virtual denominators, legacy muon extension.
-- **Bottaro et al. (2024), triangular neutron branch:** OPE + magnetic rho exchange + phenomenological Landau terms, `beta_n=0.68`; constant denominators. The nontriangular curve uses the same nuclear interaction and includes finite proton and lepton momenta in the four-dimensional angular integral.
-- **Shternin, Baldo & Haensel (2018), approximate neutron branch:** `0.6 R_A + 0.2 R_B` with momentum-dependent, zero-width propagators. **Not** a new self-consistent Brueckner calculation for DD2.
-- **Alford, Haber & Zhang (2024), adapted NWA:** Breit–Wigner *Dirac-mass* convolution with width `W=T^2/(5 MeV)` applied to a *degenerate leading-order* direct Urca kernel. **Not** the paper's full relativistic finite-temperature response; omitted medium vertex corrections.
-
-**Do not treat the five curves as comparable uncertainty-band realizations of one systematic many-body calculation.** Their diagrammatic content differs. None of the DU Fermi-momentum triangle gaps crosses zero in the tabulated comparison range; the threshold crossover is not tested here.
-
-## Supporting documents
-
-- [`docs/METHODS.md`](docs/METHODS.md) – complete calculation and precise assumptions.
-- [`docs/VALIDATION.md`](docs/VALIDATION.md) – existing checks, quantitative values and what is still unverified.
-- [`docs/ROADMAP.md`](docs/ROADMAP.md) – ordered research tasks and suggested issue list.
-- [`docs/PROVENANCE.md`](docs/PROVENANCE.md) – CompOSE IDs, input-file hashes and extraction.
-- [`docs/PRIOR_AUDIT.md`](docs/PRIOR_AUDIT.md) – spin–isospin audit underlying the nontriangular calculation.
-- [`docs/REFERENCES.md`](docs/REFERENCES.md) – original publications and their links.
-- [`docs/THEORY_OPEN_QUESTIONS.md`](docs/THEORY_OPEN_QUESTIONS.md) – unresolved physical questions and criteria for addressing them.
-- [`report/urca_physics_comparison.html`](report/urca_physics_comparison.html) – **authoritative comparative theory matrix**; contributions are incorporated approach by approach.
-- [`docs/PION_SOFTENING.md`](docs/PION_SOFTENING.md) – screening-mass vs collective-mode physics, Voskresensky MMU, overlap cautions and numerical work plan.
-- [`docs/PION_SCREENING_SCAN.md`](docs/PION_SCREENING_SCAN.md) – implemented fixed-background Bottaro toy scan, reproduction commands, outputs and numerical checks.
-
-## GitHub usage
-
-The repository already exists at [jpons19/urca-dd2-research](https://github.com/jpons19/urca-dd2-research). **Do not reinitialize it or add another origin remote.** On an existing local checkout:
-
-```bash
-git status --short
-git pull --ff-only origin main
-```
-
-For a new checkout: `git clone git@github.com:jpons19/urca-dd2-research.git`. Review uncommitted changes before pulling, changing files, or pushing. Follow [AGENTS.md](AGENTS.md) and use small, scoped commits.
-
-GitHub Actions runs regression tests on pushes/pull requests; use `make all` for full numerical regeneration. The repository is public; no license has yet been selected. Do not redistribute published PDFs or original CompOSE archives without verifying their reuse permissions.
+Repository: [jpons19/urca-dd2-research](https://github.com/jpons19/urca-dd2-research).

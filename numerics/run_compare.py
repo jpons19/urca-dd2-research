@@ -2,12 +2,11 @@
 """Multi-EOS comparison of Urca emissivities versus baryon density.
 
 From repository root:
-    python -m calculations.multi_eos.run_compare [--points 120] [--eos DD2 BCP BSk22]
+    python -m numerics.run_compare [--points 120] [--eos DD2 BCP BSk22]
 
-Writes figures/multi_eos/<EOS>_urca_T9.csv, comparison figures, and an EOS
-diagnostics figure.  Requires external_eos/BSk22 (CompOSE eos.* files) and
-calculations/multi_eos/data/BCP_NLRMF_N_T0.npz (see tools/extract_compose_slice.py).
-Baseline DD2 outputs in calculations/ are not touched.
+Writes results/<EOS>_urca_T9.csv, the comparison figure and an EOS-inputs figure.
+Uses the derived inputs in numerics/data/; the TOV reference densities are cached
+in numerics/data/stars.json (recomputing them needs the CompOSE tables in external_eos/).
 """
 import argparse
 import csv
@@ -23,8 +22,8 @@ from . import tov
 from . import mmu as M
 import json
 
-ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / 'figures' / 'multi_eos'
+ROOT = Path(__file__).resolve().parents[1]
+OUT = ROOT / 'results'
 RANGES = {'DD2': (0.12, 0.98), 'BCP': (0.12, 1.10), 'BSk22': (0.12, 1.20)}
 LABELS = {'DD2': 'PT(GRDF2-DD2) [RMF]', 'BCP': 'BCP(NLRMF-N) [RMF]', 'BSk22': 'PCP(BSk22) [Skyrme]'}
 STYLE = {'FM': ('Friman–Maxwell / NSCool', '--', 'C0'),
@@ -55,7 +54,7 @@ def thresholds(rows, key):
 
 def stars(name):
     """Central densities of 1.4 Msun and Mmax stars, and DU-onset masses (cached)."""
-    cache = OUT / 'stars.json'
+    cache = E.DATA / 'stars.json'
     data = json.loads(cache.read_text()) if cache.exists() else {}
     if name not in data:
         sub, th, nbf = TOV_INPUT[name]
@@ -89,7 +88,7 @@ def scan(name, npoints):
         rows.append(r)
     OUT.mkdir(parents=True, exist_ok=True)
     with open(OUT / f'{name}_urca_T9.csv', 'w', newline='') as f:
-        w = csv.DictWriter(f, fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
+        w = csv.DictWriter(f, fieldnames=list(rows[0]), lineterminator='\n'); w.writeheader(); w.writerows(rows)
     return rows
 
 
